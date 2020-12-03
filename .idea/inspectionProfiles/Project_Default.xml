@@ -1,0 +1,68 @@
+<component name="InspectionProjectProfileManager">
+  <profile version="1.0">
+    <option name="myName" value="Project Default" />
+    <inspection_tool class="HtmlUnknownTag" enabled="true" level="WARNING" enabled_by_default="true">
+      <option name="myValues">
+        <value>
+          <list size="7">
+            <item index="0" class="java.lang.String" itemvalue="nobr" />
+            <item index="1" class="java.lang.String" itemvalue="noembed" />
+            <item index="2" class="java.lang.String" itemvalue="comment" />
+            <item index="3" class="java.lang.String" itemvalue="noscript" />
+            <item index="4" class="java.lang.String" itemvalue="embed" />
+            <item index="5" class="java.lang.String" itemvalue="script" />
+            <item index="6" class="java.lang.String" itemvalue="button" />
+          </list>
+        </value>
+      </option>
+      <option name="myCustomValuesEnabled" value="true" />
+    </inspection_tool>
+    <inspection_tool class="PyCompatibilityInspection" enabled="true" level="WARNING" enabled_by_default="true">
+      <option name="ourVersions">
+        <value>
+          <list size="4">
+            <item index="0" class="java.lang.String" itemvalue="3.6" />
+            <item index="1" class="java.lang.String" itemvalue="3.7" />
+            <item index="2" class="java.lang.String" itemvalue="3.8" />
+            <item index="3" class="java.lang.String" itemvalue="3.9" />
+          </list>
+        </value>
+      </option>
+    </inspection_tool>
+    <inspection_tool class="PyMissingTypeHintsInspection" enabled="true" level="WEAK WARNING" enabled_by_default="true" />
+    <inspection_tool class="PyPackageRequirementsInspection" enabled="true" level="WARNING" enabled_by_default="true">
+      <option name="ignoredPackages">
+        <value>
+          <list size="2">
+            <item index="0" class="java.lang.String" itemvalue="telegram" />
+            <item index="1" class="java.lang.String" itemvalue="discord" />
+          </list>
+        </value>
+      </option>
+    </inspection_tool>
+    <inspection_tool class="PyUnresolvedReferencesInspection" enabled="true" level="WARNING" enabled_by_default="true">
+      <option name="ignoredIdentifiers">
+        <list>
+          <option value="issues.models.Issue.*" />
+          <option value="issues.models.CheckStatus.*" />
+          <option value="issues.management.generic.get_model._default_manager" />
+          <option value="rooms.models.Room.notes" />
+          <option value="rooms.models.Room.teams" />
+          <option value="rooms.models.Member.objects" />
+          <option value="rooms.models.Note.objects" />
+          <option value="rooms.models.Team.objects" />
+          <option value="rooms.models.Room.objects" />
+          <option value="tasks.models.Task.statuses" />
+          <option value="tasks.models.TaskStatus.objects" />
+          <option value="tasks.models.Tag.objects" />
+          <option value="django_ideal.models.check_statuses.BulkStatus.objects" />
+          <option value="django_ideal.models.check_statuses.AbstractCheckStatus.objects" />
+          <option value="django.db.models.base.Model.objects" />
+          <option value="app_votes.models.Vote.objects" />
+          <option value="app_votes.models.AppSuggestion.objects" />
+          <option value="django_ideal.models.executor_statuses.AbstractExecutorStatus.objects" />
+        </list>
+      </option>
+    </inspection_tool>
+  </profile>
+</component>
