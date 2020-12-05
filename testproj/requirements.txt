@@ -1,0 +1,9 @@
+asgiref==3.3.1
+Django==3.1.4
+django-debug-toolbar==3.2
+ldap3==2.8.1
+pyasn1==0.4.8
+pytz==2020.4
+sqlparse==0.4.1
+wfastcgi==3.0.0
+-e ..
