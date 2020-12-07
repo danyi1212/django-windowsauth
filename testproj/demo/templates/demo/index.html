@@ -5,6 +5,13 @@
     <title>django-windowsauth Demo</title>
 </head>
 <body>
-    <h1>Hello {{ remote_user }}!</h1>
+    {% if messages %}
+        <ul class="messages">
+            {% for message in messages %}
+            <li {% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+            {% endfor %}
+        </ul>
+    {% endif %}
+    <h1>Hello {{ user }}!</h1>
 </body>
 </html>

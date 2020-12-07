@@ -24,7 +24,9 @@ SECRET_KEY = '^u%bv67^*p%@ww^gapg-p8_y$gs+9%ixm5n++_%vf#%ephf6ve'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = [
+    "example.local",
+]
 
 # Application definition
 
@@ -46,14 +48,22 @@ INSTALLED_APPS = [
 ]
 
 MIDDLEWARE = [
+    'demo.middleware.FakeRemoteUserMiddleware',
     'debug_toolbar.middleware.DebugToolbarMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
+    'django.contrib.auth.middleware.RemoteUserMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+]
+
+AUTHENTICATION_BACKENDS = [
+    "windows_auth.backends.WindowsAuthBackend",
+    "django.contrib.auth.backends.ModelBackend",
 ]
 
 ROOT_URLCONF = 'testproj.urls'
@@ -147,7 +157,7 @@ LOGGING = {
     },
     'loggers': {
         'django': {
-            'handlers': ['console', 'file', ],
+            'handlers': ['console', 'file'],
             'level': os.getenv('DJANGO_LOG_LEVEL', 'INFO'),
             'propagate': False,
         },
@@ -162,4 +172,12 @@ def show_toolbar(request):
 
 DEBUG_TOOLBAR_CONFIG = {
     "SHOW_TOOLBAR_CALLBACK": show_toolbar,
+}
+
+WAUTH_DOMAINS = {
+    "example": {
+        "SERVER": "example.local",
+        "USERNAME": "EXAMPLE\\django_sync",
+        "PASSWORD": "Aa123456!"
+    }
 }

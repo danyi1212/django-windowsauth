@@ -1,7 +1,7 @@
 asgiref==3.3.1
 Django==3.1.4
 django-debug-toolbar==3.2
--e git+https://github.com/danyi1212/django-windowsauth.git@95281947b58c30112a2969ed91402a726ed68c9d#egg=django_windowsauth
+-e ..
 ldap3==2.8.1
 pyasn1==0.4.8
 pyasn1-modules==0.2.8
