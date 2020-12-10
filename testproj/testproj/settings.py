@@ -25,6 +25,8 @@ SECRET_KEY = '^u%bv67^*p%@ww^gapg-p8_y$gs+9%ixm5n++_%vf#%ephf6ve'
 DEBUG = True
 
 ALLOWED_HOSTS = [
+    "127.0.0.1",
+    "localhost",
     "example.local",
 ]
 
@@ -136,9 +138,20 @@ STATIC_ROOT = BASE_DIR / "collected_static"
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / "media"
 
+
 LOGGING = {
     'version': 1,
-    'disable_existing_loggers': False,
+    'disable_existing_loggers': True,
+    'formatters': {
+        'verbose': {
+            'format': '{levelname} {asctime} {module} {process:d} {thread:d} {message}',
+            'style': '{',
+        },
+        'simple': {
+            'format': '{levelname} {asctime} {module} {message}',
+            'style': '{',
+        },
+    },
     'handlers': {
         'console': {
             'class': 'logging.StreamHandler',
@@ -161,9 +174,14 @@ LOGGING = {
             'level': os.getenv('DJANGO_LOG_LEVEL', 'INFO'),
             'propagate': False,
         },
+        'wauth': {
+            'handlers': ['console', 'file'],
+            'level': os.getenv('DJANGO_LOG_LEVEL', 'INFO'),
+            'formatter': 'simple',
+            'propagate': False,
+        },
     },
 }
-
 
 # Debug Toolbar
 def show_toolbar(request):
@@ -174,10 +192,16 @@ DEBUG_TOOLBAR_CONFIG = {
     "SHOW_TOOLBAR_CALLBACK": show_toolbar,
 }
 
+# WAUTH_RESYNC_DELTA = "10"
+# WAUTH_RESYNC_DELTA = False
+# WAUTH_REQUIRE_RESYNC = False
+# WAUTH_USE_CACHE = True
 WAUTH_DOMAINS = {
-    "example": {
+    "EXAMPLE": {
         "SERVER": "example.local",
+        "SEARCH_SCOPE": "DC=example,DC=local",
         "USERNAME": "EXAMPLE\\django_sync",
-        "PASSWORD": "Aa123456!"
+        "PASSWORD": "Aa123456!",
+        "USE_SSL": False,
     }
 }
