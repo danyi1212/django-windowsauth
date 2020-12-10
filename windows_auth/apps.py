@@ -8,7 +8,14 @@ class WindowsAuthConfig(AppConfig):
     name = 'windows_auth'
 
     def ready(self):
-        from windows_auth.conf import settings, WAUTH_IGNORE_SETTING_WARNINGS
+        from windows_auth.conf import settings, WAUTH_IGNORE_SETTING_WARNINGS, WAUTH_PRELOAD_DOMAINS
+        from windows_auth.ldap import get_ldap_manager
+
+        # Note, when using "runserver" command this method will run multiple times due to the server first validating
+        # models before loading the project. When using WAUTH_PRELOAD_DOMAINS, this may cause multiple LDAP connections
+        # to be established and terminate quickly for each domain.
+        # You can avoid this behavior by using "runserver --noreload" parameter,
+        # or modifying the WAUTH_PRELOAD_DOMAINS setting to False.
 
         if not WAUTH_IGNORE_SETTING_WARNINGS:
             # check about users with domain missing from settings
@@ -18,3 +25,14 @@ class WindowsAuthConfig(AppConfig):
                 for result in missing_domains.values("domain").annotate(count=Count("pk")):
                     logger.warning(f"Settings for domain \"{result.get('domain')}\" are missing from WAUTH_DOMAINS "
                                    f"({result.get('count')} users found)")
+
+        # configure default preload domains
+        if WAUTH_PRELOAD_DOMAINS is None:
+            WAUTH_PRELOAD_DOMAINS = settings.WAUTH_DOMAINS.keys()
+            if "default" in WAUTH_PRELOAD_DOMAINS:
+                del WAUTH_PRELOAD_DOMAINS["default"]
+
+        if WAUTH_PRELOAD_DOMAINS:
+            for domain in WAUTH_PRELOAD_DOMAINS:
+                get_ldap_manager(domain)
+

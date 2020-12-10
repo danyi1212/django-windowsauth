@@ -1,4 +1,4 @@
-from typing import Dict, Any
+from typing import Dict, Any, Optional, Iterable, Union, Tuple
 
 from django.conf import settings
 from django.core.exceptions import ImproperlyConfigured
@@ -7,6 +7,8 @@ from django.utils import timezone
 
 from windows_auth import logger
 
+if not hasattr(settings, "WAUTH_DOMAINS"):
+    raise ImproperlyConfigured("The required setting WAUTH_DOMAINS is missing.")
 
 # Expect REMOTE_USER value to be in SPN scheme
 WAUTH_USE_SPN = getattr(settings, "WAUTH_USE_SPN", False)
@@ -20,6 +22,8 @@ WAUTH_REQUIRE_RESYNC = getattr(settings, "WAUTH_REQUIRE_RESYNC", settings.DEBUG 
 WAUTH_LOWERCASE_USERNAME = getattr(settings, "WAUTH_LOWERCASE_USERNAME", True)
 # Skip verification of domain settings on server startup
 WAUTH_IGNORE_SETTING_WARNINGS = getattr(settings, "WAUTH_IGNORE_SETTING_WARNINGS", False)
+# List of domains to preload and connect during process startup
+WAUTH_PRELOAD_DOMAINS = getattr(settings, "WAUTH_PRELOAD_DOMAINS", None)
 
 # Required domain settings
 _WAUTH_LDAP_REQUIRED_SETTINGS = (
@@ -32,12 +36,16 @@ _WAUTH_LDAP_REQUIRED_SETTINGS = (
 
 class LDAPSettings:
     # connection settings
-    SERVER = None
-    USERNAME = None
-    PASSWORD = None
-    USE_SSL = True
-    SERVER_OPTIONS = {}
-    CONNECTION_OPTIONS = {}  # TODO document ntlm auth
+    SERVER: str = None
+    USERNAME: str = None
+    PASSWORD: str = None
+    USE_SSL: bool = True
+    SERVER_OPTIONS: Dict[str, Any] = {}
+    CONNECTION_OPTIONS: Dict[str, Any] = {}  # TODO document ntlm auth
+    PRELOAD_DEFINITIONS: Optional[Iterable[Union[str, Tuple[str, Iterable[str]]]]] = (
+        ("user", ("sAMAccountName",)),
+        "group"
+    )
 
     # user sync settings
     SEARCH_SCOPE = ""
@@ -90,8 +98,3 @@ class LDAPSettings:
                 setattr(self, setting, value)
             else:
                 logger.warn(f"Unknown setting {setting} in WAUTH_DOMAINS {domain}")
-
-
-if not hasattr(settings, "WAUTH_DOMAINS"):
-    raise ImproperlyConfigured("The required setting WAUTH_DOMAINS is missing.")
-

@@ -6,10 +6,6 @@ from windows_auth import logger
 from windows_auth.conf import LDAPSettings
 
 
-# TODO keep connection active for multiple syncs
-# TODO pre load / lazy load connections setting
-
-
 class LDAPManager:
 
     def __init__(self, domain: str, settings: Optional[LDAPSettings] = None):
@@ -23,6 +19,22 @@ class LDAPManager:
         # load definitions
         # TODO preload definitions
         self.definitions: Dict[str, ObjectDef] = {}
+
+        # preload definitions
+        if self.settings.PRELOAD_DEFINITIONS:
+            logger.info("Preloading LDAP Schema definitions for objects: {0}".format(
+                ', '.join(map(
+                    lambda d: d if isinstance(d, str) else d[0],
+                    self.settings.PRELOAD_DEFINITIONS
+                ))
+            ))
+            for definition in self.settings.PRELOAD_DEFINITIONS:
+                if isinstance(definition, str):
+                    self.get_definition(definition)
+                else:
+                    object_class, attributes = definition
+                    self.get_definition(object_class, attributes=attributes)
+
         # save manager to process context
         _ldap_connections[domain] = self
 
@@ -76,11 +88,10 @@ class LDAPManager:
 
 
 _ldap_connections: Dict[str, LDAPManager] = {}
-# TODO preload domain connections
 
 
 def get_ldap_manager(domain: str, settings: Optional[LDAPSettings] = None) -> LDAPManager:
-    if domain in _ldap_connections:
-        return _ldap_connections[domain]
-    else:
-        return LDAPManager(domain, settings=settings)
+    if domain not in _ldap_connections:
+        _ldap_connections[domain] = LDAPManager(domain, settings=settings)
+
+    return _ldap_connections[domain]
