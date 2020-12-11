@@ -10,7 +10,7 @@ from ldap3 import Reader, Entry, Attribute
 from windows_auth import logger
 from windows_auth.conf import WAUTH_USE_CACHE
 from windows_auth.ldap import LDAPManager, get_ldap_manager
-from windows_auth.utils import debug_exec_time
+from windows_auth.utils import log_execution_time, LogExecutionTime
 
 
 def _match_groups(reader: Reader, groups: Optional[Union[Iterable[str], str]], attributes, default=False) -> bool:
@@ -66,7 +66,6 @@ class LDAPUser(models.Model):
         else:
             return attribute_obj.value
 
-    @debug_exec_time(lambda self, **kwargs: f"Query LDAP User {self}")
     def get_ldap_user(self, attributes: Optional[Iterable[str]] = None, refresh_cache: bool = False) -> Entry:
         """
         Query LDAP for related user entry.
@@ -84,11 +83,11 @@ class LDAPUser(models.Model):
                 f"{getattr(self.user, manager.settings.QUERY_FIELD)}",
                 attributes=attributes or manager.settings.FIELD_MAP.values(),
             )
-            self._ldap_user_cache = user_reader.search()[0]
+            with LogExecutionTime(f"Query LDAP User {self}"):
+                self._ldap_user_cache = user_reader.search()[0]
 
         return self._ldap_user_cache
 
-    @debug_exec_time(lambda self, **kwargs: f"Query LDAP Group membership for user {self}")
     def get_ldap_groups(self, attributes: Optional[Iterable[str]] = None, preload: bool = True) -> Reader:
         """
         Get a reader for all groups this user is member of, recursively.
@@ -106,7 +105,8 @@ class LDAPUser(models.Model):
         )
         # search groups
         if preload:
-            reader.search()
+            with LogExecutionTime(f"Query LDAP Group membership for user {self}"):
+                reader.search()
 
         return reader
 
@@ -129,11 +129,12 @@ class LDAPUser(models.Model):
         }
 
         # update user flags
-        for flag, groups, default in (
-                ("is_superuser", manager.settings.SUPERUSER_GROUPS, False),
-                ("is_staff", manager.settings.STAFF_GROUPS, False),
-                ("is_active", manager.settings.ACTIVE_GROUPS, True),
-        ):
+        flags = (
+            ("is_superuser", manager.settings.SUPERUSER_GROUPS, False),
+            ("is_staff", manager.settings.STAFF_GROUPS, False),
+            ("is_active", manager.settings.ACTIVE_GROUPS, True),
+        )
+        for flag, groups, default in flags:
             updated_fields[flag] = _match_groups(group_reader, groups, manager.settings.GROUP_ATTRS, default=default)
 
         # add to groups
@@ -150,16 +151,14 @@ class LDAPUser(models.Model):
         # update changed fields for user
         current_fields = model_to_dict(self.user, fields=updated_fields.keys())
         if current_fields != updated_fields:
-            start_time = timezone.now()
-            get_user_model().objects.filter(pk=self.user.pk).update(**updated_fields)
-            logger.debug(f"Perform field updates: {timezone.now() - start_time}")
+            with LogExecutionTime(f"Perform field updates for user {self}"):
+                get_user_model().objects.filter(pk=self.user.pk).update(**updated_fields)
 
         # update sync time
         if not WAUTH_USE_CACHE:
-            start_time = timezone.now()
-            self.last_sync = timezone.now()
-            self.save()
-            logger.debug(f"Save LDAP User: {timezone.now() - start_time}")
+            with LogExecutionTime(f"Save LDAP User {self}"):
+                self.last_sync = timezone.now()
+                self.save()
 
     def __str__(self):
         return f"{self.domain}\\{self.user.username}"

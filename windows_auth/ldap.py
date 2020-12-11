@@ -4,7 +4,7 @@ from ldap3 import Connection, Server, Reader, ObjectDef, AttrDef
 
 from windows_auth import logger
 from windows_auth.conf import LDAPSettings
-from windows_auth.utils import debug_exec_time
+from windows_auth.utils import LogExecutionTime
 
 
 class LDAPManager:
@@ -15,19 +15,14 @@ class LDAPManager:
         # create server
         self.server = self._create_server()
         # bind connection
-        self._conn = self._create_connection()
+        with LogExecutionTime(f"Binding LDAP connection for domain {self.domain}"):
+            self._conn = self._create_connection()
         logger.info(f"LDAP Connection Info: {self.connection}")
 
         self.definitions: Dict[str, ObjectDef] = {}
 
         # preload definitions
         if self.settings.PRELOAD_DEFINITIONS:
-            logger.info("Preloading LDAP Schema definitions for objects: {0}".format(
-                ', '.join(map(
-                    lambda d: d if isinstance(d, str) else d[0],
-                    self.settings.PRELOAD_DEFINITIONS
-                ))
-            ))
             for definition in self.settings.PRELOAD_DEFINITIONS:
                 if isinstance(definition, str):
                     self.get_definition(definition)
@@ -57,7 +52,8 @@ class LDAPManager:
     @property
     def connection(self) -> Connection:
         if not self._conn.bound:
-            self._conn.rebind()
+            with LogExecutionTime(f"Rebinding connection for domain {self.domain}"):
+                self._conn.rebind()
         return self._conn
 
     def get_definition(self, object_class: Union[str, List[str]], attributes: Iterable[str] = None) -> ObjectDef:
@@ -70,7 +66,8 @@ class LDAPManager:
         """
         # create definition if missing
         if object_class not in self.definitions:
-            self.definitions[object_class] = ObjectDef(object_class, self.connection)
+            with LogExecutionTime(f"Loading LDAP Schema definition for objectClass {object_class}"):
+                self.definitions[object_class] = ObjectDef(object_class, self.connection)
 
         # add missing attributes
         if attributes:
