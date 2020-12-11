@@ -4,6 +4,7 @@ from ldap3 import Connection, Server, Reader, ObjectDef, AttrDef
 
 from windows_auth import logger
 from windows_auth.conf import LDAPSettings
+from windows_auth.utils import debug_exec_time
 
 
 class LDAPManager:
@@ -12,12 +13,11 @@ class LDAPManager:
         self.domain = domain
         self.settings = settings if settings else LDAPSettings(domain)
         # create server
-        self.server = self.create_server()
+        self.server = self._create_server()
         # bind connection
-        self._conn = self.create_connection()
+        self._conn = self._create_connection()
         logger.info(f"LDAP Connection Info: {self.connection}")
-        # load definitions
-        # TODO preload definitions
+
         self.definitions: Dict[str, ObjectDef] = {}
 
         # preload definitions
@@ -38,20 +38,14 @@ class LDAPManager:
         # save manager to process context
         _ldap_connections[domain] = self
 
-    @property
-    def connection(self) -> Connection:
-        if not self._conn.bound:
-            self._conn.rebind()
-        return self._conn
-
-    def create_server(self) -> Server:
+    def _create_server(self) -> Server:
         return Server(
             host=self.settings.SERVER,
             use_ssl=self.settings.USE_SSL,
             **self.settings.SERVER_OPTIONS
         )
 
-    def create_connection(self) -> Connection:
+    def _create_connection(self) -> Connection:
         return Connection(
             self.server,
             user=self.settings.USERNAME,
@@ -60,7 +54,20 @@ class LDAPManager:
             **self.settings.CONNECTION_OPTIONS,
         )
 
+    @property
+    def connection(self) -> Connection:
+        if not self._conn.bound:
+            self._conn.rebind()
+        return self._conn
+
     def get_definition(self, object_class: Union[str, List[str]], attributes: Iterable[str] = None) -> ObjectDef:
+        """
+        Get a new object class definition automatically from LDAP Schema.
+        object definitions are save as cache for later use in connection.
+        :param object_class: The LDAP objectClass type to define
+        :param attributes: Extra LDAP attributes to include
+        :return: ldap3 ObjectDef instance
+        """
         # create definition if missing
         if object_class not in self.definitions:
             self.definitions[object_class] = ObjectDef(object_class, self.connection)
@@ -75,8 +82,14 @@ class LDAPManager:
 
     def get_reader(self, object_class: Union[str, List[str]], query: str = None, attributes: Iterable[str] = None) -> Reader:
         """
-
-        :rtype: object
+        Create a new ldap3 Reader for an object.
+        Object definition is generated using LDAP Schema and is cached in the LDAP Manager for later uses.
+        Query may be an LDAP query filter or ldap3 Simplified Query Language.
+        See the docs https://ldap3.readthedocs.io/en/latest/abstraction.html#simplified-query-language
+        :param object_class: LDAP objectClass type to refer to
+        :param query: Optional query to narrow down the search
+        :param attributes: Specific attributes to read
+        :return: ldap3 Reader object
         """
         return Reader(
             self.connection,
@@ -91,6 +104,12 @@ _ldap_connections: Dict[str, LDAPManager] = {}
 
 
 def get_ldap_manager(domain: str, settings: Optional[LDAPSettings] = None) -> LDAPManager:
+    """
+    Get or create new LDAP Manager using local process memory as cache
+    :param domain: LDAP Manager for domain
+    :param settings: Custom LDAP Settings
+    :return: LDAP Manager
+    """
     if domain not in _ldap_connections:
         _ldap_connections[domain] = LDAPManager(domain, settings=settings)
 
