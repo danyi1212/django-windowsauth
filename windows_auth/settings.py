@@ -3,8 +3,6 @@ from typing import Dict, Any, Optional, Iterable, Union, Tuple
 
 from django.core.exceptions import ImproperlyConfigured
 
-from windows_auth import logger
-
 # domain name to use as a fallback setting for domain missing from WAUTH_DOMAINS
 DEFAULT_DOMAIN_SETTING = "__default__"
 
@@ -44,7 +42,6 @@ class LDAPSettings:
     @classmethod
     def for_domain(cls, domain: str):
         from django.conf import settings as django_settings
-        from windows_auth.conf import WAUTH_IGNORE_SETTING_WARNINGS
 
         if not hasattr(django_settings, "WAUTH_DOMAINS"):
             raise ImproperlyConfigured("The required setting WAUTH_DOMAINS is missing.")
@@ -60,7 +57,7 @@ class LDAPSettings:
         default_settings = django_settings.WAUTH_DOMAINS.get(DEFAULT_DOMAIN_SETTING, {})
         # when domain setting
         if isinstance(default_settings, LDAPSettings):
-            return asdict(default_settings)
+            default_settings = asdict(default_settings)
 
         # merge default and domain settings
         merged_settings: Dict[str, Any] = {**default_settings, **domain_settings}
@@ -71,19 +68,8 @@ class LDAPSettings:
                 raise ImproperlyConfigured(f"Domain {domain} settings is missing a required setting: {setting.name}")
 
         cls_fields = set(f.name for f in fields(cls))
-        for setting, value in merged_settings.items():
-            # if field exists in this LDAP Settings
-            if setting in cls_fields:
-                if callable(value):
-                    value = value(domain)
-
-                # perform clean callable with value
-                clean_callback = f"clean_{setting.lower()}"
-                if hasattr(cls, clean_callback) and callable(getattr(cls, clean_callback)):
-                    value = getattr(cls, clean_callback)(value)
-
-                merged_settings[setting] = value
-            elif WAUTH_IGNORE_SETTING_WARNINGS:
-                logger.warn(f"Unknown setting {setting} in WAUTH_DOMAINS {domain}")
-
-        return cls(**merged_settings)
+        return cls(**{
+           setting: value(domain) if callable(value) else value
+           for setting, value in merged_settings.items()
+           if setting in cls_fields
+        })

@@ -29,13 +29,14 @@ class WindowsAuthConfig(AppConfig):
                                    f"({result.get('count')} users found)")
 
         # configure default preload domains
-        if WAUTH_PRELOAD_DOMAINS in (None, True):
-            WAUTH_PRELOAD_DOMAINS = settings.WAUTH_DOMAINS.keys()
-            if DEFAULT_DOMAIN_SETTING in WAUTH_PRELOAD_DOMAINS:
-                del WAUTH_PRELOAD_DOMAINS[DEFAULT_DOMAIN_SETTING]
+        preload_domains = WAUTH_PRELOAD_DOMAINS
+        if preload_domains in (None, True):
+            preload_domains = list(settings.WAUTH_DOMAINS.keys())
+            if DEFAULT_DOMAIN_SETTING in preload_domains:
+                preload_domains.remove(DEFAULT_DOMAIN_SETTING)
 
-        if WAUTH_PRELOAD_DOMAINS:
-            for domain in WAUTH_PRELOAD_DOMAINS:
+        if preload_domains:
+            for domain in preload_domains:
                 # TODO try catch to avoid failing the whole server
                 # TODO log failed connections
                 get_ldap_manager(domain)
