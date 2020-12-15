@@ -10,6 +10,7 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/3.1/ref/settings/
 """
 import os
+from dataclasses import dataclass
 from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -199,19 +200,48 @@ WAUTH_RESYNC_DELTA = True
 # WAUTH_RESYNC_DELTA = False
 # WAUTH_REQUIRE_RESYNC = False
 # WAUTH_USE_CACHE = True
+# WAUTH_DOMAINS = {
+#     # "EXAMPLE": LDAPSettings(
+#     #     SERVER="example.local",
+#     #     USERNAME="EXAMPLE\\django_sync",
+#     #     PASSWORD="Aa123456!",
+#     #     SEARCH_SCOPE="DC=example,DC=local",
+#     #     USE_SSL=False,
+#     #     GROUP_MAP={
+#     #         "demo": "Domain Admins",
+#     #         "demo2": "Domain Admins",
+#     #     }
+#     # ),
+#     "EXAMPLE": {
+#         "SERVER": "example.local",
+#         "SEARCH_SCOPE": "DC=example,DC=local",
+#         "USERNAME": lambda domain: f"{domain}\\django_sync",
+#         "PASSWORD": "Aa123456!",
+#         "USE_SSL": False,
+#         "BLABLABLA": True,
+#     },
+# }
+
+
+@dataclass()
+class MyLDAPSettings(LDAPSettings):
+    USE_SSL: bool = False
+    EXTRA_SETTING: str = "Hello, world!"
+
+
 WAUTH_DOMAINS = {
-    "EXAMPLE": LDAPSettings(
+    "EXAMPLE": MyLDAPSettings(
         SERVER="example.local",
+        SEARCH_SCOPE="DC=example,DC=local",
         USERNAME="EXAMPLE\\django_sync",
         PASSWORD="Aa123456!",
-        SEARCH_SCOPE="DC=example,DC=local",
-        USE_SSL=False,
     ),
     # "EXAMPLE": {
-    #     "SERVER": "example.local",
-    #     "SEARCH_SCOPE": "DC=example,DC=local",
-    #     "USERNAME": "EXAMPLE\\django_sync",
-    #     "PASSWORD": "Aa123456!",
-    #     "USE_SSL": False,
-    # }
+    #         "SERVER": "example.local",
+    #         "SEARCH_SCOPE": "DC=example,DC=local",
+    #         "USERNAME": lambda domain: f"{domain}\\django_sync",
+    #         "PASSWORD": "Aa123456!",
+    #         "USE_SSL": False,
+    #         "BLABLABLA": True,
+    #     },
 }
