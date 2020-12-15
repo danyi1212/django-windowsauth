@@ -3,7 +3,7 @@ from typing import List, Union, Iterable, Optional, Dict
 from ldap3 import Connection, Server, Reader, ObjectDef, AttrDef
 
 from windows_auth import logger
-from windows_auth.conf import LDAPSettings
+from windows_auth.settings import LDAPSettings
 from windows_auth.utils import LogExecutionTime
 
 
@@ -11,7 +11,7 @@ class LDAPManager:
 
     def __init__(self, domain: str, settings: Optional[LDAPSettings] = None):
         self.domain = domain
-        self.settings = settings if settings else LDAPSettings(domain)
+        self.settings = settings if settings else LDAPSettings.for_domain(domain)
         # create server
         self.server = self._create_server()
         # bind connection

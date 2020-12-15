@@ -1,11 +1,7 @@
-from typing import Dict, Any, Optional, Iterable, Union, Tuple
-
 from django.conf import settings
 from django.core.exceptions import ImproperlyConfigured
 
 from django.utils import timezone
-
-from windows_auth import logger
 
 if not hasattr(settings, "WAUTH_DOMAINS"):
     raise ImproperlyConfigured("The required setting WAUTH_DOMAINS is missing.")
@@ -24,77 +20,3 @@ WAUTH_LOWERCASE_USERNAME = getattr(settings, "WAUTH_LOWERCASE_USERNAME", True)
 WAUTH_IGNORE_SETTING_WARNINGS = getattr(settings, "WAUTH_IGNORE_SETTING_WARNINGS", False)
 # List of domains to preload and connect during process startup
 WAUTH_PRELOAD_DOMAINS = getattr(settings, "WAUTH_PRELOAD_DOMAINS", None)
-
-# Required domain settings
-_WAUTH_LDAP_REQUIRED_SETTINGS = (
-    "SERVER",
-    "USERNAME",
-    "PASSWORD",
-    "SEARCH_SCOPE"
-)
-
-
-class LDAPSettings:
-    # connection settings
-    SERVER: str = None
-    USERNAME: str = None
-    PASSWORD: str = None
-    USE_SSL: bool = True
-    SERVER_OPTIONS: Dict[str, Any] = {}
-    CONNECTION_OPTIONS: Dict[str, Any] = {}  # TODO document ntlm auth
-    PRELOAD_DEFINITIONS: Optional[Iterable[Union[str, Tuple[str, Iterable[str]]]]] = (
-        ("user", ("sAMAccountName",)),
-        "group"
-    )
-
-    # user sync settings
-    SEARCH_SCOPE = ""
-    FIELD_MAP = {
-        "username": "sAMAccountName",
-        "first_name": "givenName",
-        "last_name": "sn",
-        "email": "mail",
-    }
-    QUERY_FIELD = "username"
-
-    # groups / permissions sync settings
-    GROUP_ATTRS = "cn"
-    SUPERUSER_GROUPS = "Domain Admins"
-    STAFF_GROUPS = "Administrators"
-    ACTIVE_GROUPS = None
-    GROUP_MAP = {}
-
-    def __init__(self, domain: str):
-        resultant_settings: Dict[str, Any] = {}
-
-        # populate default domain settings
-        if hasattr(settings, "WAUTH_DOMAINS"):
-            resultant_settings.update(settings.WAUTH_DOMAINS.get("default", {}))
-
-        # populate domain specific settings
-        try:
-            resultant_settings.update(settings.WAUTH_DOMAINS[domain])
-        except KeyError:
-            raise ImproperlyConfigured(f"Domain {domain} settings could not be found in WAUTH_DOMAINS setting.")
-
-        # validate domain settings
-        for setting in _WAUTH_LDAP_REQUIRED_SETTINGS:
-            if setting not in resultant_settings:
-                raise ImproperlyConfigured(f"Domain {domain} settings is missing a required setting: {setting}")
-
-        for setting, value in resultant_settings.items():
-            if hasattr(self, setting):
-                # TODO document
-                # check for callable values for dynamic configurations
-                if callable(value):
-                    value = value(domain)
-
-                # perform clean callable with value
-                clean_callback = f"clean_{setting.lower()}"
-                if hasattr(self, clean_callback) and callable(getattr(self, clean_callback)):
-                    value = getattr(self, clean_callback)(value)
-
-                # set setting value
-                setattr(self, setting, value)
-            else:
-                logger.warn(f"Unknown setting {setting} in WAUTH_DOMAINS {domain}")
