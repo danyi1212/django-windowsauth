@@ -47,7 +47,7 @@ class WindowsAuthBackend(RemoteUserBackend):
         :param user_id: user_id to re-sync
         """
         try:
-            if WAUTH_RESYNC_DELTA:
+            if WAUTH_RESYNC_DELTA not in (None, False):
                 # convert timeout to seconds
                 if isinstance(WAUTH_RESYNC_DELTA, timezone.timedelta):
                     timeout = WAUTH_RESYNC_DELTA.total_seconds()

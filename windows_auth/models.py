@@ -79,9 +79,9 @@ class LDAPUser(models.Model):
             manager = self.get_ldap_manager()
             user_reader = manager.get_reader(
                 "user",
-                f"objectCategory: person, {manager.settings.FIELD_MAP[manager.settings.QUERY_FIELD]}: "
-                f"{getattr(self.user, manager.settings.QUERY_FIELD)}",
-                attributes=attributes or manager.settings.FIELD_MAP.values(),
+                f"objectCategory: person, {manager.settings.USER_FIELD_MAP[manager.settings.USER_QUERY_FIELD]}: "
+                f"{getattr(self.user, manager.settings.USER_QUERY_FIELD)}",
+                attributes=attributes or manager.settings.USER_FIELD_MAP.values(),
             )
             with LogExecutionTime(f"Query LDAP User {self}"):
                 self._ldap_user_cache = user_reader.search()[0]
@@ -116,7 +116,7 @@ class LDAPUser(models.Model):
 
         # query user
         # add distinguishedName to user query to be used in group query and avoid two user queries
-        ldap_user = self.get_ldap_user(attributes=("distinguishedName", *manager.settings.FIELD_MAP.values()))
+        ldap_user = self.get_ldap_user(attributes=("distinguishedName", *manager.settings.USER_FIELD_MAP.values()))
 
         # query groups
         group_reader = self.get_ldap_groups()
@@ -124,8 +124,8 @@ class LDAPUser(models.Model):
         # calculate new fields
         updated_fields = {
             field: ldap_user[attr].value
-            for field, attr in manager.settings.FIELD_MAP.items()
-            if field is not manager.settings.QUERY_FIELD and ldap_user[attr].value is not None
+            for field, attr in manager.settings.USER_FIELD_MAP.items()
+            if field is not manager.settings.USER_QUERY_FIELD and ldap_user[attr].value is not None
         }
 
         # update user flags
@@ -137,8 +137,12 @@ class LDAPUser(models.Model):
         for flag, groups, default in flags:
             updated_fields[flag] = _match_groups(group_reader, groups, manager.settings.GROUP_ATTRS, default=default)
 
+        # TODO remove from old groups
+        # TODO add to groups in bulk
+        # TODO auto create groups that does not exist
+
         # add to groups
-        for local_group_name, remote_groups in manager.settings.GROUP_MAP:
+        for local_group_name, remote_groups in manager.settings.GROUP_MAP.items():
             local_group: Group = Group.objects.get(name=local_group_name)
             # translate single group to list
             if isinstance(remote_groups, str):

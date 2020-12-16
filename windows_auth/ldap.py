@@ -1,6 +1,6 @@
 from typing import List, Union, Iterable, Optional, Dict
 
-from ldap3 import Connection, Server, Reader, ObjectDef, AttrDef
+from ldap3 import Connection, Server, Reader, ObjectDef, AttrDef, AUTO_BIND_TLS_BEFORE_BIND
 
 from windows_auth import logger
 from windows_auth.settings import LDAPSettings
@@ -46,6 +46,7 @@ class LDAPManager:
             user=self.settings.USERNAME,
             password=self.settings.PASSWORD,
             auto_bind=True,
+            read_only=self.settings.READ_ONLY,
             **self.settings.CONNECTION_OPTIONS,
         )
 
@@ -91,7 +92,7 @@ class LDAPManager:
         return Reader(
             self.connection,
             self.get_definition(object_class, attributes=attributes),
-            self.settings.SEARCH_SCOPE,
+            self.settings.SEARCH_BASE,
             query,
             attributes=attributes
         )

@@ -39,5 +39,9 @@ class WindowsAuthConfig(AppConfig):
             for domain in preload_domains:
                 # TODO try catch to avoid failing the whole server
                 # TODO log failed connections
-                get_ldap_manager(domain)
+                manager = get_ldap_manager(domain)
+                if manager.connection.bound:
+                    logger.info(f"Preloaded {domain} connection successfully.")
+                else:
+                    logger.warning(f"Failed to preload connection to domain {domain}.")
 

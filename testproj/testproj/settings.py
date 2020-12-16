@@ -13,9 +13,9 @@ import os
 from dataclasses import dataclass
 from pathlib import Path
 
-# Build paths inside the project like this: BASE_DIR / 'subdir'.
 from windows_auth.settings import LDAPSettings
 
+# Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 # Quick-start development settings - unsuitable for production
@@ -205,7 +205,7 @@ WAUTH_RESYNC_DELTA = True
 #     #     SERVER="example.local",
 #     #     USERNAME="EXAMPLE\\django_sync",
 #     #     PASSWORD="Aa123456!",
-#     #     SEARCH_SCOPE="DC=example,DC=local",
+#     #     SEARCH_BASE="DC=example,DC=local",
 #     #     USE_SSL=False,
 #     #     GROUP_MAP={
 #     #         "demo": "Domain Admins",
@@ -214,7 +214,7 @@ WAUTH_RESYNC_DELTA = True
 #     # ),
 #     "EXAMPLE": {
 #         "SERVER": "example.local",
-#         "SEARCH_SCOPE": "DC=example,DC=local",
+#         "SEARCH_BASE": "DC=example,DC=local",
 #         "USERNAME": lambda domain: f"{domain}\\django_sync",
 #         "PASSWORD": "Aa123456!",
 #         "USE_SSL": False,
@@ -232,13 +232,13 @@ class MyLDAPSettings(LDAPSettings):
 WAUTH_DOMAINS = {
     "EXAMPLE": MyLDAPSettings(
         SERVER="example.local",
-        SEARCH_SCOPE="DC=example,DC=local",
+        SEARCH_BASE="DC=example,DC=local",
         USERNAME="EXAMPLE\\django_sync",
         PASSWORD="Aa123456!",
     ),
     # "EXAMPLE": {
     #         "SERVER": "example.local",
-    #         "SEARCH_SCOPE": "DC=example,DC=local",
+    #         "SEARCH_BASE": "DC=example,DC=local",
     #         "USERNAME": lambda domain: f"{domain}\\django_sync",
     #         "PASSWORD": "Aa123456!",
     #         "USE_SSL": False,

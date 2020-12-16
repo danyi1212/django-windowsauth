@@ -13,24 +13,25 @@ class LDAPSettings:
     SERVER: str
     USERNAME: str
     PASSWORD: str
-    SEARCH_SCOPE: str
+    SEARCH_BASE: str
 
     USE_SSL: bool = True
+    READ_ONLY: bool = True
     SERVER_OPTIONS: Dict[str, Any] = field(default_factory=dict)
-    CONNECTION_OPTIONS: Dict[str, Any] = field(default_factory=dict)  # TODO document ntlm auth
+    CONNECTION_OPTIONS: Dict[str, Any] = field(default_factory=dict)
     PRELOAD_DEFINITIONS: Optional[Iterable[Union[str, Tuple[str, Iterable[str]]]]] = (
         ("user", ("sAMAccountName",)),
         "group"
     )
 
     # user sync settings
-    FIELD_MAP: Dict[str, str] = field(default_factory=lambda: {
+    USER_FIELD_MAP: Dict[str, str] = field(default_factory=lambda: {
         "username": "sAMAccountName",
         "first_name": "givenName",
         "last_name": "sn",
         "email": "mail",
     })
-    QUERY_FIELD: str = "username"
+    USER_QUERY_FIELD: str = "username"
 
     # groups / permissions sync settings
     GROUP_ATTRS: Union[str, Iterable[str]] = "cn"
