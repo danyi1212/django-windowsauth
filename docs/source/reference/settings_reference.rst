@@ -90,9 +90,6 @@ While developing in debug, it is usually useful to **receive information** about
 
     See the documentation about :doc:`../installation/logging`
 
-.. TODO custom http response code
-.. TODO send admins error reporting
-
 WAUTH_LOWERCASE_USERNAME
 ~~~~~~~~~~~~~~~~~~~~~~~~
 

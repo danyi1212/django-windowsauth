@@ -69,6 +69,15 @@ For more details visit the docs for installation:
    3. Click ``Unlock section`` on the right sidebar
 
 
+## Getting help
+
+In case you have trouble while using this module, you can use
+<!--TODO link to StackOverflow Tag-->
+
+For any bug or issue, see how to create a GitHub Issue
+
+
 ## Contributing
+
 
 <!--TODO-->

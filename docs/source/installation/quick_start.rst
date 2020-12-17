@@ -40,5 +40,3 @@ Quick Start
 
 #. Generate **web.config** files with ``py manage.py createwebconfig -s -m -w``.
 #. Create new IIS Website from the project files
-
-.. comments TODO script to add IIS website

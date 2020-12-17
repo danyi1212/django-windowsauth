@@ -8,24 +8,26 @@ Installation and Setup
 Install and Setup IIS
 ---------------------
 
-1. IIS with the default + following features:
-   ([See the docs](http://www.iis.net/learn/install))
-    2. Application / CGI
-    3. Security / Windows Authentication
-    4. (suggested) Performance Features / Dynamic Content Compression
-    5. (suggested) Health and Diagnostics / Request Monitor
-    6. (suggested) Health and Diagnostics / Tracing
-2. Unlock handlers configuration
+First, you may need to install IIS role.
+This can be done though the Control Panel > Add and Remove Programs > Install Features (``appwiz.cpl``) or via **Server Manager**.
+
+Those are the features you should select:
+    1. Application / CGI
+    2. Security / Windows Authentication
+    3. (suggested) Performance Features / Dynamic Content Compression
+    4. (suggested) Health and Diagnostics / Request Monitor
+    5. (suggested) Health and Diagnostics / Tracing
+
+Next you will need to unlock some configuration section to later use the ``createwebconfig`` management command.
+
+To unlock configuration sections:
     1. Open IIS Manager > Configuration Editor
     2. Select section ``system.webServer/handlers``
     3. Click ``Unlock section`` on the right sidebar.
     4. Repeat for sections ``system.webServer/security/authentication/anonymousAuthentication`` and ``system.webServer/security/authentication/windowsAuthentication``.
 
 .. Note::
-    | Those instruction are provided as "Best Practices" advice, your setup may vary.
-    | For more information visit the IIS Topic on Microsoft Docs: https://docs.microsoft.com/en-us/iis
-
-.. todo: rewrite section
+    For more information visit the IIS Topic on Microsoft Docs: https://docs.microsoft.com/en-us/iis
 
 Getting it
 ----------
@@ -106,8 +108,6 @@ Next you will need to configure the settings for your **Domain** to allow for LD
        }
    }
 
-.. TODO link to setting reference
-
 .. seealso:: About LDAP Search Base: https://docs.microsoft.com/en-us/windows/win32/ad/binding-to-a-search-start-point
 
 (optionally) Configure **file path** and **url path** settings for your ``static`` and ``media`` files.
@@ -122,9 +122,7 @@ Next you will need to configure the settings for your **Domain** to allow for LD
 
 You may need to execute ``$ py manage.py collectstatic`` management command after modifying the ``STATIC_ROOT`` setting.
 
-.. seealso:: Full how-to guide for Serving Static Files though IIS
-
-.. TODO link to how-to guide
+.. seealso:: Full how-to guide to :doc:`../howto/serve_static`
 
 Setup Logging
 -------------
@@ -214,17 +212,18 @@ You may want to omit those switches if you are not planning to serve static file
 The ``-w`` parameter configures IIS's ``Windows Authentication`` and disables ``Anonymous Authentication`` in the ``web.config`` file.
 You may want to change those settings manually to avoid **unlocking those configuration sections**.
 
-.. seealso:: Reference for the ``createwebconfig`` management command
+.. seealso::
+    Reference for ``createwebconfig`` at :doc:`../reference/management_commands`
 
-.. todo link to createwebconfig reference
+Next you will need to create a new IIS Website for your Django Project.
 
-Next you will need to create a new IIS Website for your Django Project
+1. Open **IIS Manager**
+2. Right-click over **sites**
+3. Click **Add website...**
+4. Give a **name** for your site (should use the same as for your Django project)
+5. Specify **Physical path** for the root of your Django project folder (where the ``manage.py`` is)
+6. Provide **binding information** as needed (can be changed later)
 
-.. TODO how to create IIS Website
+**Congratulation, now you should be able to browse to your new website!**
 
-## Setup Windows Authentication
-1. Open IIS Manager > *Your Website* > Authentication
-2. Enable "Windows Authe 1. Open IIS Manager > *Your Website* > Authentication
-2. Enable "Windows Authentication" and Disable "Anonymous
-   Authentication"ntication" and Disable "Anonymous
-   Authentication"
+Next are some things to setup and verify before publishing to production...
