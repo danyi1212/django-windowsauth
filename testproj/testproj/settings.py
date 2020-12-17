@@ -13,6 +13,8 @@ import os
 from dataclasses import dataclass
 from pathlib import Path
 
+from ldap3.utils.log import set_library_log_detail_level, BASIC, EXTENDED
+
 from windows_auth.settings import LDAPSettings
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -158,18 +160,26 @@ LOGGING = {
     'handlers': {
         'console': {
             'class': 'logging.StreamHandler',
+            'level': "INFO",
         },
         'file': {
             'level': 'DEBUG',
             'class': 'logging.handlers.RotatingFileHandler',
-            'maxBytes': 1024 ** 2 * 100,  # 100MB
+            'maxBytes': 2 ** 20 * 100,  # 100MB
             'backupCount': 10,
             'filename': BASE_DIR / 'logs' / 'debug.log',
+        },
+        'ldap': {
+            'level': 'INFO',
+            'class': 'logging.handlers.RotatingFileHandler',
+            'maxBytes': 2 ** 20 * 100,  # 100MB
+            'backupCount': 10,
+            'filename': BASE_DIR / 'logs' / 'ldap.log',
         }
     },
     'root': {
         'handlers': ['console'],
-        'level': 'WARNING',
+        'level': 'DEBUG',
     },
     'loggers': {
         'django': {
@@ -183,8 +193,15 @@ LOGGING = {
             'formatter': 'simple',
             'propagate': False,
         },
+        'ldap3': {
+            'handlers': ['console', 'ldap'],
+            'level': 'INFO',
+            'propagate': False,
+        }
     },
 }
+
+set_library_log_detail_level(BASIC)
 
 
 # Debug Toolbar

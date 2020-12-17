@@ -37,8 +37,6 @@ This can be used with ``lambda`` functions for lazy setting values.
 
 .. seealso:: More information about domain LDAP Settings can be found at :doc:`ldap_settings` reference.
 
-.. TODO support domain settings as LDAPSettings object
-
 
 WAUTH_RESYNC_DELTA
 ~~~~~~~~~~~~~~~~~~

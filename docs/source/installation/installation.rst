@@ -126,6 +126,80 @@ You may need to execute ``$ py manage.py collectstatic`` management command afte
 
 .. TODO link to how-to guide
 
+Setup Logging
+-------------
+
+Throughout this whole module, logging is done to logger named ``wauth``.
+You may handle and configure this logger through Django's setting ``LOGGING``.
+
+This can be done by adding the logger like so:
+
+.. code-block:: python
+
+    'wauth': {
+        'handlers': ['console', 'file', 'mail_admins'],
+        'level': 'INFO',
+        'propagate': False,
+    },
+
+Additionally, you may want to configure logging for ``ldap3``. You can add this logger:
+
+.. code-block:: python
+
+    'ldap3': {
+        'handlers': ['console', 'ldap'],
+        'level': 'DEBUG',
+        'propagate': False,
+    }
+
+And make sure to configure ``ldap3`` log type, like this:
+
+.. code-block:: python
+
+    from ldap3.utils.log import set_library_log_detail_level, BASIC
+    set_library_log_detail_level(BASIC)
+
+The lines above can be added in your Django settings file, just after the ``LOGGING`` setting.
+Remember to document about that in your code!
+
+.. seealso::
+    More information of that on https://ldap3.readthedocs.io/en/latest/logging.html
+
+For your convenience, those are the handles used in the examples above:
+
+.. code-block:: python
+
+    'handlers': {
+        'console': {
+            'class': 'logging.StreamHandler',
+            'level': 'WARNING',
+        },
+        'file': {
+            'level': 'INFO',
+            'class': 'logging.handlers.RotatingFileHandler',
+            'maxBytes': 2 ** 20 * 100,  # 100MB
+            'backupCount': 10,
+            'filename': BASE_DIR / 'logs' / 'debug.log',
+        },
+        'ldap': {
+            'level': 'INFO',
+            'class': 'logging.handlers.RotatingFileHandler',
+            'maxBytes': 2 ** 20 * 100,  # 100MB
+            'backupCount': 10,
+            'filename': BASE_DIR / 'logs' / 'ldap.log',
+        },
+        'mail_admins': {
+            'level': 'ERROR',
+            'class': 'django.utils.log.AdminEmailHandler',
+            'include_html': True,
+        },
+    },
+
+.. note::
+
+    You will need to configure settings for sending emails to use the ``mail_admins`` handler:
+    https://docs.djangoproject.com/en/3.1/topics/email/
+
 Publish to IIS
 --------------
 
@@ -154,4 +228,3 @@ Next you will need to create a new IIS Website for your Django Project
 2. Enable "Windows Authentication" and Disable "Anonymous
    Authentication"ntication" and Disable "Anonymous
    Authentication"
-

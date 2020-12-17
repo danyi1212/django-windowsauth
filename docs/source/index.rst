@@ -22,7 +22,6 @@ Features
 
    installation/quick_start
    installation/installation
-   installation/logging
    installation/publish
 
 .. toctree::
