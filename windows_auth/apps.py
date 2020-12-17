@@ -49,3 +49,5 @@ class WindowsAuthConfig(AppConfig):
                 except LDAPException as e:
                     logger.exception(f"Failed to preload connection to domain {domain}.")
 
+        # TODO preserve ldap connection metrics
+

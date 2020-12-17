@@ -8,7 +8,7 @@ from django.utils import timezone
 from ldap3 import Reader, Entry, Attribute
 
 from windows_auth import logger
-from windows_auth.conf import WAUTH_USE_CACHE
+from windows_auth.conf import WAUTH_USE_CACHE, WAUTH_USE_SPN
 from windows_auth.ldap import LDAPManager, get_ldap_manager
 from windows_auth.utils import LogExecutionTime
 
@@ -190,7 +190,10 @@ class LDAPUser(models.Model):
                 self.save()
 
     def __str__(self):
-        return f"{self.domain}\\{self.user.username}"
+        if WAUTH_USE_SPN:
+            return f"{self.user.username}@{self.domain}"
+        else:
+            return f"{self.domain}\\{self.user.username}"
 
     def __repr__(self):
         return self.__str__()
