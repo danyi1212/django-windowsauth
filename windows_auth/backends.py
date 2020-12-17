@@ -2,8 +2,10 @@ from django.contrib.auth.backends import RemoteUserBackend
 from django.core.cache import cache
 from django.utils import timezone
 
+from windows_auth import logger
+from windows_auth.conf import WAUTH_USE_SPN, WAUTH_RESYNC_DELTA, WAUTH_USE_CACHE, WAUTH_REQUIRE_RESYNC, \
+    WAUTH_LOWERCASE_USERNAME
 from windows_auth.models import LDAPUser
-from windows_auth.conf import WAUTH_USE_SPN, WAUTH_RESYNC_DELTA, WAUTH_USE_CACHE, WAUTH_REQUIRE_RESYNC, WAUTH_LOWERCASE_USERNAME
 
 
 class WindowsAuthBackend(RemoteUserBackend):
@@ -71,7 +73,7 @@ class WindowsAuthBackend(RemoteUserBackend):
             # user is getting created the first time
             pass
         except Exception as e:
-            # TODO log
+            logger.exception(f"Failed to synchronize user {user_id} against LDAP")
             if WAUTH_REQUIRE_RESYNC:
                 raise e
 

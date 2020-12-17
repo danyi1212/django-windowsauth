@@ -333,7 +333,7 @@ SUPERUSER_GROUPS
 When synchronizing users against LDAP, you can specify a **list of LDAP Groups** to match for setting the Django User's ``is_superuser`` flag.
 If the user is member in **one** of the listed LDAP groups, the ``is_superuser`` flag will be set to ``True``, otherwise it is set to ``False``.
 
-| Configuring this setting to ``None`` will set the ``is_superuser`` flag for all synced users to ``False``.
+| Configuring this setting to ``None`` will not modify the ``is_superuser`` flag.
 | Configuring this setting to a **string** is equal to a **single length tuple**.
 
 The group membership is checked by comparing the **groups listed in this setting** to the **LDAP Group Attributes** listed in ``GROUP_ATTRS`` setting.
@@ -347,7 +347,7 @@ STAFF_GROUPS
 When synchronizing users against LDAP, you can specify a **list of LDAP Groups** to match for setting the Django User's ``is_staff`` flag.
 If the user is member in **one** of the listed LDAP groups, the ``is_staff`` flag will be set to ``True``, otherwise it is set to ``False``.
 
-| Configuring this setting to ``None`` will set the ``is_staff`` flag for all synced users to ``False``.
+| Configuring this setting to ``None`` will not modify the ``is_staff`` flag.
 | Configuring this setting to a **string** is equal to a **single length tuple**.
 
 The group membership is checked by comparing the **groups listed in this setting** to the **LDAP Group Attributes** listed in ``GROUP_ATTRS`` setting.
@@ -361,7 +361,7 @@ ACTIVE_GROUPS
 When synchronizing users against LDAP, you can specify a **list of LDAP Groups** to match for setting the Django User's ``is_active`` flag.
 If the user is member in **one** of the listed LDAP groups, the ``is_active`` flag will be set to ``True``, otherwise it is set to ``False``.
 
-| Configuring this setting to ``None`` will set the ``is_active`` flag for all synced users to ``True``.
+| Configuring this setting to ``None`` will not modify the ``is_active`` flag.
 | Configuring this setting to a **string** is equal to a **single length tuple**.
 
 The group membership is checked by comparing the **groups listed in this setting** to the **LDAP Group Attributes** listed in ``GROUP_ATTRS`` setting.
@@ -378,3 +378,10 @@ If the user is member in **one** of the listed LDAP groups, it will be added to 
 
 The setting is configured as a dictionary where the **keys are Django Groups names** and the value is **a string or a list of LDAP Groups**.
 The LDAP Groups are compared using the attributes listed in the ``GROUP_ATTRS`` setting.
+
+When a user synchronizes, LDAP group membership will be checked **directly or in-directly** for at least one of the listed groups.
+For each LDAP group that the user is found to be a member of, it will be **added** to the related Django group, otherwise it will be **removed** from it.
+Groups that are **not listed** in this setting will **not be affected** by this.
+
+.. warning::
+    When a group that is configured in this setting is missing, it will be **created automatically**.

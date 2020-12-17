@@ -1,6 +1,6 @@
 from typing import List, Union, Iterable, Optional, Dict
 
-from ldap3 import Connection, Server, Reader, ObjectDef, AttrDef, AUTO_BIND_TLS_BEFORE_BIND
+from ldap3 import Connection, Server, Reader, ObjectDef, AttrDef
 
 from windows_auth import logger
 from windows_auth.settings import LDAPSettings

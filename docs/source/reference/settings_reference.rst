@@ -21,7 +21,7 @@ Setting this value to ``True`` will will expect the authenticated user to be pre
     In case you still need to switch between them, you can either **manually replace** the LDAPUser's domain values from the old NetBIOS Names to the new FQDNs, or just **delete** all LDAPUsers and let them be created again when a user login again after change.
 
 WAUTH_DOMAINS (Required)
-~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~
 
 | Type ``dict``; Default to ``None``; Required.
 | LDAP Settings for each domain.
@@ -128,3 +128,11 @@ When the setting is configured to ``None`` or ``True``, all the domains configur
 In case you use only the **default domain settings** in the ``WAUTH_DOMAINS`` setting, it is advised to **manually** configure this setting to preload the relevant domains.
 
 To enable LDAP Connection **lazy loading**, you can set this setting to ``False``.
+
+.. note::
+    When using ``runserver`` command, due to the server first **validating models** before loading the project, it may seam like **multiple connections** get initiated for the same domains.
+
+    By setting this setting, it may cause **multiple LDAP connections** to be established and terminate quickly for each domain.
+
+    You should **not be warned** by this behavior as this is behaves like a **quick connection test** to your LDAP server, and this is should only happened during **development phase**.
+    In case you would like to **avoid this behavior** anyway, you can use the ``runserver --noreload`` parameter, or modifying the ``WAUTH_PRELOAD_DOMAINS`` setting to ``False`` when debugging.

@@ -235,6 +235,11 @@ WAUTH_DOMAINS = {
         SEARCH_BASE="DC=example,DC=local",
         USERNAME="EXAMPLE\\django_sync",
         PASSWORD="Aa123456!",
+        SUPERUSER_GROUPS=None,
+        GROUP_MAP={
+            "demo": "Domain Admins",
+            "demo2": "Domain Admins",
+        }
     ),
     # "EXAMPLE": {
     #         "SERVER": "example.local",

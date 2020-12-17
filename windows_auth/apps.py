@@ -1,3 +1,4 @@
+from ldap3.core.exceptions import LDAPException
 from django.apps import AppConfig
 from django.db.models import Count
 
@@ -19,8 +20,8 @@ class WindowsAuthConfig(AppConfig):
         # You can avoid this behavior by using "runserver --noreload" parameter,
         # or modifying the WAUTH_PRELOAD_DOMAINS setting to False.
 
+        # check about users with domain missing from settings
         if not WAUTH_IGNORE_SETTING_WARNINGS and DEFAULT_DOMAIN_SETTING not in settings.WAUTH_DOMAINS:
-            # check about users with domain missing from settings
             from windows_auth.models import LDAPUser
             missing_domains = LDAPUser.objects.exclude(domain__in=settings.WAUTH_DOMAINS.keys())
             if missing_domains.exists():
@@ -35,13 +36,16 @@ class WindowsAuthConfig(AppConfig):
             if DEFAULT_DOMAIN_SETTING in preload_domains:
                 preload_domains.remove(DEFAULT_DOMAIN_SETTING)
 
+        # preload domains
         if preload_domains:
             for domain in preload_domains:
-                # TODO try catch to avoid failing the whole server
-                # TODO log failed connections
-                manager = get_ldap_manager(domain)
-                if manager.connection.bound:
-                    logger.info(f"Preloaded {domain} connection successfully.")
-                else:
-                    logger.warning(f"Failed to preload connection to domain {domain}.")
+                try:
+                    # attempt to load LDAP connection
+                    manager = get_ldap_manager(domain)
+                    if manager.connection.bound:
+                        logger.debug(f"Preloaded LDAP connection to domain {domain} successfully.")
+                    else:
+                        logger.warning(f"Failed to preload connection to domain {domain}.")
+                except LDAPException as e:
+                    logger.exception(f"Failed to preload connection to domain {domain}.")
 

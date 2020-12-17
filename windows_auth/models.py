@@ -1,4 +1,4 @@
-from typing import Union, Iterable, Optional
+from typing import Union, Iterable, Optional, Dict
 
 from django.contrib.auth import get_user_model
 from django.contrib.auth.models import User, Group
@@ -10,17 +10,17 @@ from ldap3 import Reader, Entry, Attribute
 from windows_auth import logger
 from windows_auth.conf import WAUTH_USE_CACHE
 from windows_auth.ldap import LDAPManager, get_ldap_manager
-from windows_auth.utils import log_execution_time, LogExecutionTime
+from windows_auth.utils import LogExecutionTime
 
 
 def _match_groups(reader: Reader, groups: Optional[Union[Iterable[str], str]], attributes, default=False) -> bool:
     """
-
-    :param reader:
-    :param groups:
-    :param attributes:
-    :param default:
-    :return:
+    Check if at least one of the provided groups exists in a LDAP Reader for Groups.
+    :param reader: LDAP Reader for Groups
+    :param groups: One or more group names
+    :param attributes: List of attributes to check for comparing group's name
+    :param default: Default value when no group is provided.
+    :return: Boolean if exist
     """
     if groups:
         if isinstance(groups, str):
@@ -110,7 +110,16 @@ class LDAPUser(models.Model):
 
         return reader
 
-    def sync(self):
+    def sync(self) -> None:
+        """
+        Synchronizes Django User against related LDAP User.
+
+        Fields are synchronized using USER_FIELD_MAP from the domain's LDAP Settings.
+        User flags are using SUPERUSER_GROUPS, STAFF_GROUPS and ACTIVE_GROUPS settings.
+        Group membership is replicated using GROUPS_MAP setting.
+
+        :return: None
+        """
         logger.info(f"Syncing LDAP User {self}")
         manager = self.get_ldap_manager()
 
@@ -128,29 +137,45 @@ class LDAPUser(models.Model):
             if field is not manager.settings.USER_QUERY_FIELD and ldap_user[attr].value is not None
         }
 
+        # check user flags
+        flags = []
+        if manager.settings.SUPERUSER_GROUPS:
+            flags.append(("is_superuser", manager.settings.SUPERUSER_GROUPS, False))
+        if manager.settings.STAFF_GROUPS:
+            flags.append(("is_staff", manager.settings.STAFF_GROUPS, False))
+        if manager.settings.ACTIVE_GROUPS:
+            flags.append(("is_active", manager.settings.ACTIVE_GROUPS, True))
+
         # update user flags
-        flags = (
-            ("is_superuser", manager.settings.SUPERUSER_GROUPS, False),
-            ("is_staff", manager.settings.STAFF_GROUPS, False),
-            ("is_active", manager.settings.ACTIVE_GROUPS, True),
-        )
         for flag, groups, default in flags:
             updated_fields[flag] = _match_groups(group_reader, groups, manager.settings.GROUP_ATTRS, default=default)
 
-        # TODO remove from old groups
-        # TODO add to groups in bulk
-        # TODO auto create groups that does not exist
+        # check group membership
+        group_membership: Dict[Group, bool] = {}
+        for local_group_name, remote_groups in manager.settings.GROUP_MAP.items():
+            # get group model object
+            local_group, created = Group.objects.get_or_create(name=local_group_name)
+
+            if created:
+                logger.info(f"The group \"{local_group_name}\" from GROUP_MAP setting for domain {self.domain}"
+                            f" was not found and was created automatically.")
+
+            # check if user supposes to me a member
+            group_membership[local_group] = _match_groups(group_reader, remote_groups, manager.settings.GROUP_ATTRS)
 
         # add to groups
-        for local_group_name, remote_groups in manager.settings.GROUP_MAP.items():
-            local_group: Group = Group.objects.get(name=local_group_name)
-            # translate single group to list
-            if isinstance(remote_groups, str):
-                remote_groups = [remote_groups]
+        self.user.groups.add(*(
+            local_group
+            for local_group, membership_check in group_membership.items()
+            if membership_check
+        ))
 
-            # when user is member in at least one group
-            if any(group_reader.match(manager.settings.GROUP_ATTRS, remote_group) for remote_group in remote_groups):
-                local_group.user_set.add(self.user)
+        # remove from groups
+        self.user.groups.remove(*(
+            local_group
+            for local_group, membership_check in group_membership.items()
+            if not membership_check
+        ))
 
         # update changed fields for user
         current_fields = model_to_dict(self.user, fields=updated_fields.keys())
