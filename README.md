@@ -5,6 +5,10 @@
 ##### Easy integration and deployment of Django projects into Windows Environments.
 Documentation is available at [https://django-windowsauth.readthedocs.io/en/latest/](https://django-windowsauth.readthedocs.io/en/latest/)
 
+Requirements:
+* Python (3.6, 3.7, 3.8, 3.9)
+* Django (2.2, 3.0, 3.1)
+
 #### Features
 - Deploy to **Microsoft IIS** quickly using [wfastcgi](https://pypi.org/project/wfastcgi/)
 - Authenticate via [IIS's Windows Authentication](https://docs.microsoft.com/en-us/iis/configuration/system.webserver/security/authentication/windowsauthentication/#:~:text=You%20can%20use%20Windows%20authentication,Windows%20accounts%20to%20identify%20users.&text=When%20you%20install%20and%20enable,the%20default%20protocol%20is%20Kerberos.)
