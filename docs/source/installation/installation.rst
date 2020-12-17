@@ -18,7 +18,8 @@ Install and Setup IIS
 2. Unlock handlers configuration
     1. Open IIS Manager > Configuration Editor
     2. Select section ``system.webServer/handlers``
-    3. Click ``Unlock section`` on the right sidebar
+    3. Click ``Unlock section`` on the right sidebar.
+    4. Repeat for sections ``system.webServer/security/authentication/anonymousAuthentication`` and ``system.webServer/security/authentication/windowsAuthentication``.
 
 .. Note::
     | Those instruction are provided as "Best Practices" advice, your setup may vary.
@@ -131,10 +132,13 @@ Publish to IIS
 First, we will need to create the ``web.config`` files for the IIS Website configuration.
 This can be done simply by running the management command:::
 
-$ py manage.py createwebconfig -s -m
+$ py manage.py createwebconfig -s -m -w
 
 Notice the ``-s`` and ``-m`` switches, those are to add configurations for **Serving Static Files though IIS**.
 You may want to omit those switches if you are not planning to serve static files though IIS.
+
+The ``-w`` parameter configures IIS's ``Windows Authentication`` and disables ``Anonymous Authentication`` in the ``web.config`` file.
+You may want to change those settings manually to avoid **unlocking those configuration sections**.
 
 .. seealso:: Reference for the ``createwebconfig`` management command
 

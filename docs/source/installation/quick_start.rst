@@ -38,7 +38,7 @@ Quick Start
       MEDIA_URL = '/media/'
       MEDIA_ROOT = BASE_DIR / "media"
 
-#. Generate **web.config** files with ``py manage.py createwebconfig -s -m``.
+#. Generate **web.config** files with ``py manage.py createwebconfig -s -m -w``.
 #. Create new IIS Website from the project files
 
 .. comments TODO script to add IIS website
