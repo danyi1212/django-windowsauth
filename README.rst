@@ -4,7 +4,7 @@ django-windowsauth
 .. comments [![Documentation Status](https://readthedocs.org/projects/django-windowsauth/badge/?version=latest)](https://django-windowsauth.readthedocs.io/en/latest/?badge=latest)
 
 **Easy integration and deployment of Django projects into Windows Environments.**
-Documentation is available at [https://django-windowsauth.readthedocs.io/en/latest/](https://django-windowsauth.readthedocs.io/en/latest/)
+Documentation is available at https://django-windowsauth.readthedocs.io/en/latest/
 
 Requirements:
 * Python (3.6, 3.7, 3.8, 3.9)
@@ -12,11 +12,11 @@ Requirements:
 
 Features
 ~~~~~~~~
-- Deploy to **Microsoft IIS** quickly using [wfastcgi](https://pypi.org/project/wfastcgi/)
-- Authenticate via [IIS's Windows Authentication](https://docs.microsoft.com/en-us/iis/configuration/system.webserver/security/authentication/windowsauthentication/#:~:text=You%20can%20use%20Windows%20authentication,Windows%20accounts%20to%20identify%20users.&text=When%20you%20install%20and%20enable,the%20default%20protocol%20is%20Kerberos.)
-- Authorize against **Active Directory** using [ldap3](https://ldap3.readthedocs.io/en/latest/) package
+- Deploy to **Microsoft IIS** quickly using `wfastcgi <https://pypi.org/project/wfastcgi/>`_
+- Authenticate via `IIS's Windows Authentication <https://docs.microsoft.com/en-us/iis/configuration/system.webserver/security/authentication/windowsauthentication/#:~:text=You%20can%20use%20Windows%20authentication,Windows%20accounts%20to%20identify%20users.&text=When%20you%20install%20and%20enable,the%20default%20protocol%20is%20Kerberos>`_.
+- Authorize against **Active Directory** using `ldap3 <https://ldap3.readthedocs.io/en/latest/>`_ package
 - Manage **LDAP Connections** for easy integrations
-- (Coming soon) Integration with [django-debug-toolbar](https://django-debug-toolbar.readthedocs.io/en/latest/)
+- (Coming soon) Integration with `django-debug-toolbar <https://django-debug-toolbar.readthedocs.io/en/latest/>`_
 
 Quick Start
 -----------
@@ -24,6 +24,7 @@ Quick Start
 2. Run `py manage.py migrate windows_auth`
 3. Add "fastcgi application" with `wfastcgi-enable`
 4. Configure project settings
+
 .. code-block::  python
 
     INSTALLED_APPS = [
