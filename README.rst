@@ -3,8 +3,8 @@ django-windowsauth
 
 .. comments [![Documentation Status](https://readthedocs.org/projects/django-windowsauth/badge/?version=latest)](https://django-windowsauth.readthedocs.io/en/latest/?badge=latest)
 
-**Easy integration and deployment of Django projects into Windows Environments.**
-Documentation is available at https://django-windowsauth.readthedocs.io/en/latest/
+| **Easy integration and deployment of Django projects into Windows Environments.**
+| Documentation is available at https://django-windowsauth.readthedocs.io/en/latest/
 
 Requirements:
 
