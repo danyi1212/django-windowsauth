@@ -9,6 +9,6 @@
     <orderEntry type="sourceFolder" forTests="false" />
   </component>
   <component name="ReSTService">
-    <option name="DOC_DIR" value="C:\Sites\django-windowsauth\docs" />
+    <option name="DOC_DIR" value="$MODULE_DIR$\docs" />
   </component>
 </module>
