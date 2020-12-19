@@ -18,11 +18,9 @@ django-windowsauth
 
 **Easy integration and deployment of Django projects into Windows Environments.**
 
-Documentation is available at https://django-windowsauth.readthedocs.io/en/latest/
-
-PyPI Package at https://pypi.org/project/django-windowsauth/
-
-Django Packages at https://djangopackages.org/packages/p/django-windowsauth/
+| Documentation is available at https://django-windowsauth.readthedocs.io/en/latest/
+| PyPI Package at https://pypi.org/project/django-windowsauth/
+| Django Packages at https://djangopackages.org/packages/p/django-windowsauth/
 
 Requirements:
 
