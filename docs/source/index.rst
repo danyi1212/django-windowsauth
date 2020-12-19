@@ -36,6 +36,7 @@ Features
    howto/securing_ldap
    howto/custom_error_pages
    howto/debug_toolbar
+   howto/collect_metrics
 
 .. toctree::
    :maxdepth: 1

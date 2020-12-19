@@ -48,6 +48,7 @@ INSTALLED_APPS = [
 
     # Third Party Apps
     'windows_auth',
+    'windows_auth.ldap_metrics',
     'debug_toolbar',
 
     # Project Apps
@@ -192,7 +193,7 @@ LOGGING = {
             'handlers': ['console', 'file'],
             'level': os.getenv('DJANGO_LOG_LEVEL', 'DEBUG'),
             'formatter': 'simple',
-            'propagate': False,
+            'propagate': True,
         },
         'ldap3': {
             'handlers': ['console', 'ldap'],
@@ -215,30 +216,8 @@ DEBUG_TOOLBAR_CONFIG = {
 }
 
 WAUTH_RESYNC_DELTA = True
-# WAUTH_RESYNC_DELTA = False
-# WAUTH_REQUIRE_RESYNC = False
+WAUTH_REQUIRE_RESYNC = False
 # WAUTH_USE_CACHE = True
-# WAUTH_DOMAINS = {
-#     # "EXAMPLE": LDAPSettings(
-#     #     SERVER="example.local",
-#     #     USERNAME="EXAMPLE\\django_sync",
-#     #     PASSWORD="Aa123456!",
-#     #     SEARCH_BASE="DC=example,DC=local",
-#     #     USE_SSL=False,
-#     #     GROUP_MAP={
-#     #         "demo": "Domain Admins",
-#     #         "demo2": "Domain Admins",
-#     #     }
-#     # ),
-#     "EXAMPLE": {
-#         "SERVER": "example.local",
-#         "SEARCH_BASE": "DC=example,DC=local",
-#         "USERNAME": lambda domain: f"{domain}\\django_sync",
-#         "PASSWORD": "Aa123456!",
-#         "USE_SSL": False,
-#         "BLABLABLA": True,
-#     },
-# }
 
 
 @dataclass()
@@ -254,6 +233,7 @@ WAUTH_DOMAINS = {
         USERNAME="EXAMPLE\\django_sync",
         PASSWORD="Aa123456!",
         SUPERUSER_GROUPS=None,
+        COLLECT_METRICS=True,
         GROUP_MAP={
             "demo": "Domain Admins",
             "demo2": "Domain Admins",

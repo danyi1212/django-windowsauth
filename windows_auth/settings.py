@@ -17,6 +17,7 @@ class LDAPSettings:
 
     USE_SSL: bool = True
     READ_ONLY: bool = True
+    COLLECT_METRICS: bool = False
     SERVER_OPTIONS: Dict[str, Any] = field(default_factory=dict)
     CONNECTION_OPTIONS: Dict[str, Any] = field(default_factory=dict)
     PRELOAD_DEFINITIONS: Optional[Iterable[Union[str, Tuple[str, Iterable[str]]]]] = (

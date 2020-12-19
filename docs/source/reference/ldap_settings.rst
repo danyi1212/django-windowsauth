@@ -218,6 +218,20 @@ This setting is used as the ``read_only`` parameter for the ldap3 ``Connection``
 .. warning::
     This is not guaranteed to be a risk / vulnerabilities free connection, **make sure to minimize the bind account's permissions**
 
+COLLECT_METRICS
+~~~~~~~~~~~~~~~
+
+| Type ``bool``; Default to ``True``; Not Required.
+| Collecting connection usage metrics.
+
+Enabling ``ldap3``'s Connection Metrics collection.
+Those usage metrics can be accessed via ``manager.get_usage()`` method.
+
+Connection metrics can be saved automatically, see how to :doc:`../howto/collect_metrics`
+
+.. seealso::
+    ``ldap3`` documentation https://ldap3.readthedocs.io/en/latest/metrics.html
+
 SERVER_OPTIONS
 ~~~~~~~~~~~~~~
 

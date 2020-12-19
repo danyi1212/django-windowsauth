@@ -1,6 +1,7 @@
 from typing import List, Union, Iterable, Optional, Dict
 
 from ldap3 import Connection, Server, Reader, ObjectDef, AttrDef
+from ldap3.core.usage import ConnectionUsage
 
 from windows_auth import logger
 from windows_auth.settings import LDAPSettings
@@ -47,6 +48,7 @@ class LDAPManager:
             password=self.settings.PASSWORD,
             auto_bind=True,
             read_only=self.settings.READ_ONLY,
+            collect_usage=self.settings.COLLECT_METRICS,
             **self.settings.CONNECTION_OPTIONS,
         )
 
@@ -56,6 +58,14 @@ class LDAPManager:
             with LogExecutionTime(f"Rebinding connection for domain {self.domain}"):
                 self._conn.rebind()
         return self._conn
+
+    def close(self):
+        return self._conn.unbind()
+
+    def get_usage(self, unbind: bool = False) -> ConnectionUsage:
+        if unbind:
+            self.close()
+        return self._conn.usage
 
     def get_definition(self, object_class: Union[str, List[str]], attributes: Iterable[str] = None) -> ObjectDef:
         """
@@ -112,3 +122,15 @@ def get_ldap_manager(domain: str, settings: Optional[LDAPSettings] = None) -> LD
         _ldap_connections[domain] = LDAPManager(domain, settings=settings)
 
     return _ldap_connections[domain]
+
+
+def close_connections(domains: List[str] = None):
+    """
+    Unbind LDAP connections for domains.
+    :param domains: List of domains to unbind, None for all domains.
+    :return: None.
+    """
+    for domain, manager in _ldap_connections.items():
+        if not domains or domain in domains:
+            logger.debug(f"CLosing LDAP Connection to {domain}")
+            manager.close()

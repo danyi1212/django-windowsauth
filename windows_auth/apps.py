@@ -1,3 +1,5 @@
+import atexit
+
 from ldap3.core.exceptions import LDAPException
 from django.apps import AppConfig
 from django.db.models import Count
@@ -12,7 +14,7 @@ class WindowsAuthConfig(AppConfig):
         from django.conf import settings
         from windows_auth.conf import WAUTH_IGNORE_SETTING_WARNINGS, WAUTH_PRELOAD_DOMAINS
         from windows_auth.settings import DEFAULT_DOMAIN_SETTING
-        from windows_auth.ldap import get_ldap_manager
+        from windows_auth.ldap import get_ldap_manager, close_connections
 
         # Note, when using "runserver" command this method will run multiple times due to the server first validating
         # models before loading the project. When using WAUTH_PRELOAD_DOMAINS, this may cause multiple LDAP connections
@@ -49,5 +51,6 @@ class WindowsAuthConfig(AppConfig):
                 except LDAPException as e:
                     logger.exception(f"Failed to preload connection to domain {domain}.")
 
-        # TODO preserve ldap connection metrics
+        # unbind all connection at exit
+        atexit.register(close_connections)
 
