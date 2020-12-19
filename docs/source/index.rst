@@ -6,7 +6,7 @@
 django-windowsauth
 ==================
 
-Easy integration and deployment of Django projects into Windows Systems.
+**Easy integration and deployment of Django projects into Windows Environments.**
 
 Features
 --------
