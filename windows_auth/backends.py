@@ -1,10 +1,6 @@
 from django.contrib.auth.backends import RemoteUserBackend
-from django.core.cache import cache
-from django.utils import timezone
 
-from windows_auth import logger
-from windows_auth.conf import WAUTH_USE_SPN, WAUTH_RESYNC_DELTA, WAUTH_USE_CACHE, WAUTH_REQUIRE_RESYNC, \
-    WAUTH_LOWERCASE_USERNAME
+from windows_auth.conf import WAUTH_USE_SPN, WAUTH_LOWERCASE_USERNAME
 from windows_auth.models import LDAPUser
 
 
@@ -42,39 +38,3 @@ class WindowsAuthBackend(RemoteUserBackend):
             domain=self.domain,
         )
         ldap_user.sync()
-
-    def get_user(self, user_id):
-        """
-        Re-sync the user from LDAP, if necessary.
-        :param user_id: user_id to re-sync
-        """
-        try:
-            if WAUTH_RESYNC_DELTA not in (None, False):
-                # convert timeout to seconds
-                if isinstance(WAUTH_RESYNC_DELTA, timezone.timedelta):
-                    timeout = WAUTH_RESYNC_DELTA.total_seconds()
-                else:
-                    timeout = int(WAUTH_RESYNC_DELTA)
-
-                if WAUTH_USE_CACHE:
-                    # if cache does not exist
-                    if not cache.get(f"wauth_resync_user_{user_id}"):
-                        ldap_user = LDAPUser.objects.get(user__pk=user_id)
-                        ldap_user.sync()
-
-                        # create new cache key
-                        cache.set(f"wauth_rsync_user_{user_id}", True, timeout)
-                else:
-                    # check via database query
-                    ldap_user = LDAPUser.objects.get(user__pk=user_id)
-                    if ldap_user.last_sync < timezone.now() - timezone.timedelta(seconds=timeout):
-                        ldap_user.sync()
-        except LDAPUser.DoesNotExist:
-            # user is getting created the first time
-            pass
-        except Exception as e:
-            logger.exception(f"Failed to synchronize user {user_id} against LDAP")
-            if WAUTH_REQUIRE_RESYNC:
-                raise e
-
-        return super(WindowsAuthBackend, self).get_user(user_id)

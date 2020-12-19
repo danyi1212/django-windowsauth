@@ -75,6 +75,7 @@ This middleware must be after ``AuthenticationMiddleware``, that is usually prov
         ...
         'django.contrib.auth.middleware.AuthenticationMiddleware',
         'django.contrib.auth.middleware.RemoteUserMiddleware',
+        'windows_auth.middleware.UserSyncMiddleware',
         ...
     ]
 

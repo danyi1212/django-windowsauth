@@ -64,6 +64,7 @@ MIDDLEWARE = [
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.auth.middleware.RemoteUserMiddleware',
+    'windows_auth.middleware.UserSyncMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
@@ -256,7 +257,7 @@ WAUTH_DOMAINS = {
         GROUP_MAP={
             "demo": "Domain Admins",
             "demo2": "Domain Admins",
-        }
+        },
     ),
     # "EXAMPLE": {
     #         "SERVER": "example.local",

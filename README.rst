@@ -47,26 +47,29 @@ Quick Start
 .. code-block::  python
 
     INSTALLED_APPS = [
-       "windows_auth",
+        "windows_auth",
     ]
 
     MIDDLEWARE = [
-       'django.contrib.auth.middleware.AuthenticationMiddleware',
-       'django.contrib.auth.middleware.RemoteUserMiddleware',
+        ...
+        'django.contrib.auth.middleware.AuthenticationMiddleware',
+        'django.contrib.auth.middleware.RemoteUserMiddleware',
+        'windows_auth.middleware.UserSyncMiddleware',
+        ...
     ]
 
     AUTHENTICATION_BACKENDS = [
-       "windows_auth.backends.WindowsAuthBackend",
-       "django.contrib.auth.backends.ModelBackend",
+        "windows_auth.backends.WindowsAuthBackend",
+        "django.contrib.auth.backends.ModelBackend",
     ]
 
     WAUTH_DOMAINS = {
-       "<your domain's NetBIOS Name> (EXAMPLE)": {
-           "SERVER": "<domain FQDN> (example.local)",
-           "SEARCH_SCOPE": "<search scope> (DC=example,DC=local)",
-           "USERNAME": "<bind account username>",
-           "PASSWORD": "<bind account password>",
-       }
+        "<your domain's NetBIOS Name> (EXAMPLE)": {
+            "SERVER": "<domain FQDN> (example.local)",
+            "SEARCH_SCOPE": "<search scope> (DC=example,DC=local)",
+            "USERNAME": "<bind account username>",
+            "PASSWORD": "<bind account password>",
+        }
     }
 
     # optional

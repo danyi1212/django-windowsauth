@@ -52,7 +52,7 @@ The value is used as **number of seconds** in ``int``, ``str`` or any other obje
 The value can also be a ``django.utils.timezone.timedelta`` object.
 
 | In case you need to synchronize the user on every request, you can configure the setting to ``0``.
-| To disable automatic synchronizations via LDAP, you can configure the setting to ``None`` or ``False``.
+| To disable automatic synchronizations via LDAP, you can remove the ``UserSyncMiddleware`` or configure the setting to ``None`` or ``False``.
 
 .. note::
     Synchronizing user via LDAP can delay the Request / Response processing by only few ms, but your experience may vary.
@@ -89,6 +89,24 @@ While developing in debug, it is usually useful to **receive information** about
     If you have setup logging and email reporting for server admins, you can also **receive the exception details by email**.
 
     See the documentation about :doc:`../installation/logging`
+
+
+WAUTH_ERROR_RESPONSE
+~~~~~~~~~~~~~~~~~~~~
+
+| Type ``int`` or ``Callable``; Default to ``None``; Not Required.
+| Configure custom HTTP Response for Errors while User automatic LDAP Synchronization.
+
+When a user synchronization fails, you can define a **custom HTTP Response** to send to clients.
+
+This can be configured as a ``int``, it is used as the **Response Code** for response with the default text ``Authorization Failed``.
+This also can be a **function** that receive the ``request`` and ``exception`` as first and second arguments, and returning a Django ``HttpResponse`` object.
+
+When configured to ``None`` the exception is propagated, and usually results in a **Error 500** for clients.
+
+.. note::
+    This setting is only relevant when ``WAUTH_REQUIRE_SYNC`` is set to ``True``, otherwise the **exception will be ignored**.
+
 
 WAUTH_LOWERCASE_USERNAME
 ~~~~~~~~~~~~~~~~~~~~~~~~

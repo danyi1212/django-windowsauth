@@ -23,6 +23,7 @@ Features
    installation/quick_start
    installation/installation
    installation/publish
+   installation/migration
 
 .. toctree::
    :maxdepth: 1
@@ -45,3 +46,4 @@ Features
    reference/auth_backend
    reference/models
    reference/management_commands
+   reference/change_log
