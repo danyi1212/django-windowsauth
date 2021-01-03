@@ -20,6 +20,9 @@ class LDAPManager:
             self._conn = self._create_connection()
         logger.info(f"LDAP Connection Info: {self.connection}")
 
+        # reader history
+        self._reader_history: List[Reader] = []
+
         self.definitions: Dict[str, ObjectDef] = {}
 
         # preload definitions
@@ -67,6 +70,10 @@ class LDAPManager:
             self.close()
         return self._conn.usage
 
+    def get_operation_history(self):
+        for reader in self._reader_history:
+            yield from reader.operations
+
     def get_definition(self, object_class: Union[str, List[str]], attributes: Iterable[str] = None) -> ObjectDef:
         """
         Get a new object class definition automatically from LDAP Schema.
@@ -99,13 +106,15 @@ class LDAPManager:
         :param attributes: Specific attributes to read
         :return: ldap3 Reader object
         """
-        return Reader(
+        reader = Reader(
             self.connection,
             self.get_definition(object_class, attributes=attributes),
             self.settings.SEARCH_BASE,
             query,
             attributes=attributes
         )
+        self._reader_history.append(reader)
+        return reader
 
 
 _ldap_connections: Dict[str, LDAPManager] = {}
