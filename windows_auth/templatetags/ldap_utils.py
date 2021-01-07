@@ -36,6 +36,4 @@ def ldap_dereference_alias_label(value):
 
 @register.filter()
 def filter_response(value):
-    for entry in value:
-        if "dn" in entry:
-            yield entry
+    return list(filter(lambda e: "dn" in e, value))

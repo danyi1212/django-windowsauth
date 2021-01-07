@@ -113,7 +113,7 @@
                         {{ operation.result.description | title }}
                     </td>
                     <td style="text-align: center">
-                        {{ operation.response | length }}
+                        {{ operation.response | filter_response | length }}
                     </td>
                 </tr>
                 <tr class="djUnselected djToggleDetails_{{ forloop.counter }}" id="ldapOperationDetails_{{ forloop.counter }}">
