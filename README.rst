@@ -33,7 +33,7 @@ Features
 - Authenticate via `IIS's Windows Authentication <https://docs.microsoft.com/en-us/iis/configuration/system.webserver/security/authentication/windowsauthentication/#:~:text=You%20can%20use%20Windows%20authentication,Windows%20accounts%20to%20identify%20users.&text=When%20you%20install%20and%20enable,the%20default%20protocol%20is%20Kerberos>`_.
 - Authorize against **Active Directory** using `ldap3 <https://ldap3.readthedocs.io/en/latest/>`_ package
 - Manage **LDAP Connections** for easy integrations
-- (Coming soon) Integration with `django-debug-toolbar <https://django-debug-toolbar.readthedocs.io/en/latest/>`_
+- Debug using `django-debug-toolbar <https://django-debug-toolbar.readthedocs.io/en/latest/>`_
 
 Quick Start
 -----------
@@ -49,11 +49,11 @@ Quick Start
     ]
 
     MIDDLEWARE = [
-        ...
+        # ...
         'django.contrib.auth.middleware.AuthenticationMiddleware',
         'django.contrib.auth.middleware.RemoteUserMiddleware',
         'windows_auth.middleware.UserSyncMiddleware',
-        ...
+        # ...
     ]
 
     AUTHENTICATION_BACKENDS = [
@@ -85,9 +85,9 @@ For more details visit the docs for installation: https://django-windowsauth.rea
 Getting help
 ------------
 
-In case you have trouble while using this module, you can use
+In case you have trouble while using this module, you may use the `GitHub Disccussion <https://github.com/danyi1212/django-windowsauth/discussions>`_.
 
-For any bug or issue, see how to create a GitHub Issue
+For any bug or issue, open a `new GitHub Issue <https://github.com/danyi1212/django-windowsauth/issues>`_.
 
 Contributing
 ------------
