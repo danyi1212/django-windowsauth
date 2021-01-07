@@ -4,17 +4,13 @@ django-windowsauth
 .. image:: https://readthedocs.org/projects/django-windowsauth/badge/?version=latest
     :target: https://django-windowsauth.readthedocs.io/en/latest/?badge=latest
     :alt: Documentation Status
-
-.. image:: https://pypip.in/v/django-windowsauth/badge.png
-    :target: https://crate.io/packages/django-windowsauth/
-    :alt: Latest PyPI version
     
 .. image:: https://img.shields.io/badge/Maintained-yes-green.svg
-   :target: https://github.com/danyi1212/django-windowsauth/graphs/commit-activity
-   :alt: Maintained
-
-.. image:: https://codecov.io/gh/danyi1212/django-windowsauth/branch/main/graph/badge.svg?token=VUW6E7KMRU
-    :target: https://codecov.io/gh/danyi1212/django-windowsauth
+    :target: https://github.com/danyi1212/django-windowsauth/graphs/commit-activity
+    :alt: Maintained
+   
+.. image:: https://static.pepy.tech/personalized-badge/django-windowsauth?period=total&units=international_system&left_color=grey&right_color=blue&left_text=Downloads
+    :target: https://pepy.tech/project/django-windowsauth
 
 **Easy integration and deployment of Django projects into Windows Environments.**
 
