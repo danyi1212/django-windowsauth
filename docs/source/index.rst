@@ -44,6 +44,7 @@ Features
 
    reference/settings_reference
    reference/ldap_settings
+   reference/decorators
    reference/models
    reference/management_commands
    reference/change_log

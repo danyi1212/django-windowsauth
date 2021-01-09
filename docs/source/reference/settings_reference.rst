@@ -81,15 +81,14 @@ When using user automatic synchronization, propagate any exception raised during
 This will result with the user receiving a **Error 500** when they fail to synchronize properly.
 
 This is useful for security sake, when **requiring** users to have the most updated fields and permissions.
-
 While developing in debug, it is usually useful to **receive information** about the synchronization exception.
 
+In any case, the synchronization exception **will be logged** as error with the exception information included.
+If you have setup logging and email reporting for server admins, you can also **receive the exception details by email**.
+
 .. note::
-    In any case, the synchronization exception **will be logged** as error with the exception information included.
-    If you have setup logging and email reporting for server admins, you can also **receive the exception details by email**.
-
-    See the documentation about :doc:`../installation/logging`
-
+    You can configure this per view with the ``ldap_sync_required`` decorator.
+    See the reference at :docs:`./decorators`
 
 WAUTH_ERROR_RESPONSE
 ~~~~~~~~~~~~~~~~~~~~

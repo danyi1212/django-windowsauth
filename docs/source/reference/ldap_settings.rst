@@ -320,8 +320,6 @@ This is mentioned in the tutorial :doc:`../howto/custom_user_fields`.
     Make sure to use a unique field, that is unique at the **LDAP side** too.
     If multiple objects are found, the synchronization will fail.
 
-.. TODO test that ^
-
 GROUP_ATTRS
 ~~~~~~~~~~~
 
