@@ -8,5 +8,5 @@ class FakeRemoteUserMiddleware:
 
     def __call__(self, request: HttpRequest):
         if not request.META.get("REMOTE_USER"):
-            request.META['REMOTE_USER'] = "EXAMPLE\\administrator"
+            request.META['REMOTE_USER'] = "EXAMPLE\\Administrator"
         return self.get_response(request)
