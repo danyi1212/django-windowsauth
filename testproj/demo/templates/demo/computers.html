@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+{% block content %}
+    <a href="{% url 'demo:index' %}">Go home</a>
+    <ul>
+        {% for computer in computers %}
+            <li>{{ computer.name }} - {{ computer.description | default:"Empty" }}
+                <form method="post">
+                    {% csrf_token %}
+                    <input name="name" value="{{ computer.name }}" hidden>
+                    {{ form.description }}
+                    <input type="submit" value="Submit">
+                </form>
+            </li>
+        {% empty %}
+            <li>No computers found</li>
+        {% endfor %}
+    </ul>
+{% endblock content %}

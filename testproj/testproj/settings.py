@@ -207,12 +207,8 @@ set_library_log_detail_level(BASIC)
 
 
 # Debug Toolbar
-def show_toolbar(request):
-    return True
-
-
 DEBUG_TOOLBAR_CONFIG = {
-    "SHOW_TOOLBAR_CALLBACK": show_toolbar,
+    "SHOW_TOOLBAR_CALLBACK": lambda r: True,
 }
 DEBUG_TOOLBAR_PANELS = [
     'debug_toolbar.panels.history.HistoryPanel',
@@ -251,6 +247,7 @@ WAUTH_DOMAINS = {
         PASSWORD="Aa123456!",
         SUPERUSER_GROUPS=None,
         COLLECT_METRICS=True,
+        READ_ONLY=False,
         GROUP_MAP={
             "demo": "Domain Admins",
             "demo2": "Domain Admins",

@@ -1,17 +1,5 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>django-windowsauth Demo</title>
-</head>
-<body>
-    {% if messages %}
-        <ul class="messages">
-            {% for message in messages %}
-            <li {% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
-            {% endfor %}
-        </ul>
-    {% endif %}
+{% extends "base.html" %}
+{% block content %}
     <h1>Hello {{ user }}!</h1>
-</body>
-</html>
+    <a href="{% url 'demo:computers' %}">See computers</a>
+{% endblock content %}
