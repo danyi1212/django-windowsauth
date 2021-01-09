@@ -1,5 +1,6 @@
 from functools import wraps
 from logging import Logger, DEBUG
+from re import finditer
 from typing import Union, Callable, Optional, Tuple, Iterable, Any, Dict
 
 from django.utils import timezone
@@ -61,4 +62,6 @@ def log_execution_time(msg: Union[Callable, str], logger: Logger = default_logge
     return decorator
 
 
-
+def camel_case_split(value):
+    matches = finditer('.+?(?:(?<=[a-z])(?=[A-Z])|(?<=[A-Z])(?=[A-Z][a-z])|$)', value)
+    return " ".join(m.group(0) for m in matches)

@@ -1,0 +1,10 @@
+{% extends "windows_auth/details_base.html" %}
+{% block request %}
+    <h6>Changes</h6>
+    {% for change in operation.change_labels %}
+        <p>
+            <span class="djdt-color" style="background-color:blue"></span>
+            <strong>{{ forloop.counter }}.</strong> {{ change | safe }}
+        </p>
+    {% endfor %}
+{% endblock request %}

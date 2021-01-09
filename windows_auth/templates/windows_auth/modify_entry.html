@@ -1,0 +1,26 @@
+{% extends "windows_auth/entry_base.html" %}
+
+{% block details %}
+    <p>
+        <span class="djdt-color" style="background-color:indigo"></span>
+        <strong>DN:</strong> {{ entry.dn }}
+    </p>
+    <p>
+        <span class="djdt-color" style="background-color:indigo"></span>
+        <strong>Result:</strong> {{ entry.result }}
+        <span class="djdt-color" style="background-color:indigo"></span>
+        <strong>Description:</strong> {{ entry.description }}
+    </p>
+    {% if entry.message %}
+        <p>
+            <span class="djdt-color" style="background-color:indigo"></span>
+            <strong>Message:</strong> {{ entry.message }}
+        </p>
+    {% endif %}
+    {% if entry.referrals %}
+        <p>
+            <span class="djdt-color" style="background-color:indigo"></span>
+            <strong>Referrals:</strong> {{ entry.referrals }}
+        </p>
+    {% endif %}
+{% endblock details %}

@@ -1,0 +1,24 @@
+{% extends "windows_auth/entry_base.html" %}
+
+{% block details %}
+    <p>
+        <span class="djdt-color" style="background-color:indigo"></span>
+        <strong>DN:</strong> {{ entry.dn }}
+    </p>
+    <table>
+        <thead>
+        <tr>
+            {% for attr in entry.attributes.keys %}
+                <th style="text-align: left">{{ attr }}</th>
+            {% endfor %}
+        </tr>
+        </thead>
+        <tbody>
+        <tr>
+            {% for value in entry.attributes.values %}
+                <td>{{ value | default:"-" }}</td>
+            {% endfor %}
+        </tr>
+        </tbody>
+    </table>
+{% endblock details %}

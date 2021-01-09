@@ -1,243 +1,111 @@
-{% load ldap_utils %}
-{% for domain, manager in domains.items %}
+{% for domain, info in domains.items %}
     <h4>{{ domain }}</h4>
 
     <ul>
         <li>
             <strong>
                 <span class="djdt-color" style="background-color:red"></span>
-                Elapsed Time: {{ manager.usage.elapsed_time }}
+                Elapsed Time: {{ info.usage.elapsed_time }}
             </strong>
             <span class="djdt-color" style="background-color:red"></span>
-            Initial start time: {{ manager.usage.initial_connection_start_time | date:"SHORT_DATETIME_FORMAT" }}
+            Initial start time: {{ info.usage.initial_connection_start_time | date:"SHORT_DATETIME_FORMAT" }}
             <span class="djdt-color" style="background-color:red"></span>
-            Open socket time: {{ manager.usage.open_socket_start_time | date:"SHORT_DATETIME_FORMAT" }}
+            Open socket time: {{ info.usage.open_socket_start_time | date:"SHORT_DATETIME_FORMAT" }}
             <span class="djdt-color" style="background-color:red"></span>
-            Close socket time: {{ manager.usage.close_socket_start_time | date:"SHORT_DATETIME_FORMAT" | default:"STILL OPEN" }}
+            Close socket time: {{ info.usage.close_socket_start_time | date:"SHORT_DATETIME_FORMAT" | default:"STILL OPEN" }}
         </li>
         <li>
             <span class="djdt-color" style="background-color:teal"></span>
-            Last Transmitted time: {{ manager.usage.last_transmitted_time | date:"SHORT_DATETIME_FORMAT" }}
+            Last Transmitted time: {{ info.usage.last_transmitted_time | date:"SHORT_DATETIME_FORMAT" }}
             <span class="djdt-color" style="background-color:teal"></span>
-            Last Received time: {{ manager.usage.last_received_time | date:"SHORT_DATETIME_FORMAT" }}
+            Last Received time: {{ info.usage.last_received_time | date:"SHORT_DATETIME_FORMAT" }}
             <strong>
                 <span class="djdt-color" style="background-color:orange"></span>
-                Traffic I/O: {{ manager.usage.bytes_received | filesizeformat }} / {{ manager.usage.bytes_transmitted | filesizeformat }}
+                Traffic I/O: {{ info.usage.bytes_received | filesizeformat }} / {{ info.usage.bytes_transmitted | filesizeformat }}
             </strong>
             <span class="djdt-color" style="background-color:orange"></span>
-            Messages: {{ manager.usage.messages_transmitted }} sent / {{ manager.usage.messages_received }} received
+            Messages: {{ info.usage.messages_transmitted }} sent / {{ info.usage.messages_received }} received
         </li>
         <li>
             <span class="djdt-color" style="background-color:forestgreen"></span>
-            Servers from pool: {{ manager.usage.servers_from_pool }}
+            Servers from pool: {{ info.usage.servers_from_pool }}
             <span class="djdt-color" style="background-color:forestgreen"></span>
-            Sockets open: {{ manager.usage.open_sockets }}
+            Sockets open: {{ info.usage.open_sockets }}
             <span class="djdt-color" style="background-color:forestgreen"></span>
-            Sockets closed: {{ manager.usage.closed_sockets }}
+            Sockets closed: {{ info.usage.closed_sockets }}
             <span class="djdt-color" style="background-color:forestgreen"></span>
-            Sockets wrapped: {{ manager.usage.wrapped_sockets }}
+            Sockets wrapped: {{ info.usage.wrapped_sockets }}
             <span class="djdt-color" style="background-color:indigo"></span>
             Referrals
             <span class="djdt-color" style="background-color:indigo"></span>
-            Received: {{ manager.usage.referrals_received }}
+            Received: {{ info.usage.referrals_received }}
             <span class="djdt-color" style="background-color:indigo"></span>
-            Followed: {{ manager.usage.referrals_followed }}
+            Followed: {{ info.usage.referrals_followed }}
             <span class="djdt-color" style="background-color:indigo"></span>
-            Connections: {{ manager.usage.referrals_connections }}
+            Connections: {{ info.usage.referrals_connections }}
             <span class="djdt-color" style="background-color:gray"></span>
-            Restartable failures: {{ manager.usage.restartable_failures }}
+            Restartable failures: {{ info.usage.restartable_failures }}
             <span class="djdt-color" style="background-color:gray"></span>
-            Restartable successes: {{ manager.usage.restartable_successes }}
+            Restartable successes: {{ info.usage.restartable_successes }}
         </li>
         <li>
             <strong>
                 <span class="djdt-color" style="background-color:blue"></span>
-                Operations: {{ manager.usage.operations }}
+                Operations: {{ info.usage.operations }}
             </strong>
             <span class="djdt-color" style="background-color:blue"></span>
-            Search: {{ manager.usage.search_operations }}
+            Search: {{ info.usage.search_operations }}
             <span class="djdt-color" style="background-color:blue"></span>
-            Compare: {{ manager.usage.compare_operations }}
+            Compare: {{ info.usage.compare_operations }}
             <span class="djdt-color" style="background-color:red"></span>
-            Add: {{ manager.usage.add_operations }}
+            Add: {{ info.usage.add_operations }}
             <span class="djdt-color" style="background-color:red"></span>
-            Delete: {{ manager.usage.delete_operations }}
+            Delete: {{ info.usage.delete_operations }}
             <span class="djdt-color" style="background-color:red"></span>
-            Modify: {{ manager.usage.modify_operations }}
+            Modify: {{ info.usage.modify_operations }}
             <span class="djdt-color" style="background-color:red"></span>
-            Modify DN (Move): {{ manager.usage.modify_dn_operations }}
+            Modify DN (Move): {{ info.usage.modify_dn_operations }}
             <span class="djdt-color" style="background-color:blue"></span>
-            Extended: {{ manager.usage.extended_operations }}
+            Extended: {{ info.usage.extended_operations }}
             <span class="djdt-color" style="background-color:blue"></span>
-            Bind: {{ manager.usage.bind_operations }}
+            Bind: {{ info.usage.bind_operations }}
             <span class="djdt-color" style="background-color:blue"></span>
-            Unbind: {{ manager.usage.unbind_operations }}
+            Unbind: {{ info.usage.unbind_operations }}
             <span class="djdt-color" style="background-color:blue"></span>
-            Abandon: {{ manager.usage.abandon_operations }}
+            Abandon: {{ info.usage.abandon_operations }}
         </li>
     </ul>
 
-    {% if manager.operations %}
+    {% if info.operations %}
         <table>
-            <colgroup>
-                <col>
-                <col>
-                <col>
-                <col>
-                <col>
-                <col>
-            </colgroup>
             <thead>
             <tr>
                 <th>#</th>
-                <th colspan="2">Operation</th>
-                <th>Type</th>
+                <th colspan="2">Type</th>
+                <th>Operation</th>
+                <th>Elapsed</th>
                 <th>Result</th>
                 <th>Entries</th>
             </tr>
             </thead>
             <tbody>
-            {% for operation in manager.operations %}
+            {% for operation in info.operations|slice:"::-1" %}
                 <tr class="{% if not operation.result.result %}djDebugRowWarning{% endif %}" id="ldapOperation_{{ forloop.counter }}">
                     <td><span class="djdt-color" style="background-color:{% if operation.result.result %}red{% else %}green{% endif %}"></span></td>
                     <td class="djdt-toggle">
                         <button type="button" class="djToggleSwitch" data-toggle-name="ldapOperation" data-toggle-id="{{ forloop.counter }}">+</button>
                     </td>
-                    <td>
-                        {{ operation.request.filter | safe }}
-                    </td>
-                    <td>
-                        {{ operation.request.type | camel_case_split | title }}
-                    </td>
-                    <td>
-                        {{ operation.result.description | title }}
-                    </td>
-                    <td style="text-align: center">
-                        {{ operation.response | filter_response | length }}
-                    </td>
+                    <td title="{{ operation.type_label }}">{{ operation.type_icon }}</td>
+                    <td>{{ operation.title }}</td>
+                    <td>{{ operation.time_elapsed }}</td>
+                    <td title="{{ operation.result.description | title }}">{{ operation.status_icon }}</td>
+                    <td>{{ operation.entry_count }}</td>
                 </tr>
                 <tr class="djUnselected djToggleDetails_{{ forloop.counter }}" id="ldapOperationDetails_{{ forloop.counter }}">
                     <td colspan="2"></td>
                     <td colspan="4">
                         <div class="djSQLDetailsDiv">
-                            <!--TODO display other operations correctly - https://ldap3.readthedocs.io/en/latest/connection.html-->
-                            <h4>Request</h4>
-                            <p>
-                                <span class="djdt-color" style="background-color:blue"></span>
-                                <strong>Search Base:</strong> {{ operation.request.base | safe }}
-                                <span class="djdt-color" style="background-color:blue"></span>
-                                <strong>Search Scope:</strong> {{ operation.request.scope | ldap_scope_label }}
-                                <span class="djdt-color" style="background-color:blue"></span>
-                                <strong>Dereference Policy:</strong> {{ operation.request.dereferenceAlias | ldap_dereference_alias_label }}
-                                {% if operation.request.controls %}
-                                    <span class="djdt-color" style="background-color:blue"></span>
-                                    <strong>Controls:</strong> {{ operation.request.controls }}
-                                {% endif %}
-                            </p>
-                            {% if operation.request.pagedSize %}
-                                <p>
-                                    <span class="djdt-color" style="background-color:blue"></span>
-                                    <strong>Page Size:</strong> {{ operation.request.pageSize }}
-                                    <span class="djdt-color" style="background-color:blue"></span>
-                                    <strong>Paging Supported:</strong> {{ operation.request.pagedCriticality | yesno }}
-                                    <span class="djdt-color" style="background-color:blue"></span>
-                                    <strong>Page Cookie:</strong> {{ operation.request.pagedCookie }}
-                                </p>
-                            {% endif %}
-                            <p>
-                                <span class="djdt-color" style="background-color:blue"></span>
-                                <strong>Size Limit:</strong> {{ operation.request.sizeLimit }}
-                                <span class="djdt-color" style="background-color:blue"></span>
-                                <strong>Time Limit:</strong> {{ operation.request.timeLimit }}
-                                <span class="djdt-color" style="background-color:blue"></span>
-                                <strong>Types Only:</strong> {{ operation.request.typesOnly }}
-                            </p>
-                            <p>
-                                <span class="djdt-color" style="background-color:blue"></span>
-                                <strong>Attributes:</strong> {{ operation.request.attributes | join:", " }}
-                            </p>
-                            <h4>Response</h4>
-                            <p>
-                                <span class="djdt-color" style="background-color:green"></span>
-                                <strong>Status:</strong> {{ operation.result.result }}
-                                <span class="djdt-color" style="background-color:green"></span>
-                                <strong>Description:</strong> {{ operation.result.description | title }}
-                                <span class="djdt-color" style="background-color:green"></span>
-                                <strong>Type:</strong> {{ operation.result.type }}
-                                {% if operation.result.dn %}
-                                    <span class="djdt-color" style="background-color:green"></span>
-                                    <strong>DN:</strong> {{ operation.result.dn | safe }}
-                                {% endif %}
-                                {% if operation.result.message %}
-                                    <span class="djdt-color" style="background-color:green"></span>
-                                    <strong>Message:</strong> {{ operation.result.message | safe }}
-                                {% endif %}
-                            </p>
-                            {% if operation.result.referrals %}
-                                <p>
-                                    <span class="djdt-color" style="background-color:green"></span>
-                                    <strong>Referrals:</strong> {{ operation.result.referrals | join:", " }}
-                                </p>
-                            {% endif %}
-                            <h4>Entries</h4>
-                            <!--
-                            <table>
-                                <thead>
-                                <tr>
-                                    <th colspan="{{ operation.request.attributes | length }}">
-                                        <h5 style="text-align: center">
-                                            Entry DN
-                                        </h5>
-                                    </th>
-                                </tr>
-                                <tr>
-                                    {% for attr in operation.request.attributes %}
-                                        <th style="text-align: left">{{ attr }}</th>
-                                    {% endfor %}
-                                </tr>
-                                </thead>
-                                <tbody>
-                                    {% for entry in operation.response|filter_response %}
-                                        <tr>
-                                            <td colspan="{{ operation.request.attributes | length }}">
-                                                <h5 style="text-align: center">
-                                                    {{ entry.dn }}
-                                                </h5>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            {% for value in entry.attributes.values %}
-                                                <td>{{ value | default:"-" }}</td>
-                                            {% endfor %}
-                                        </tr>
-                                    {% endfor %}
-                                </tbody>
-                            </table>
-                            -->
-                            {% for entry in operation.response|filter_response %}
-                                <p>
-                                    <span class="djdt-color" style="background-color:green"></span>
-                                    <strong>DN:</strong> {{ entry.dn }}
-                                </p>
-                                <table>
-                                    <thead>
-                                    <tr>
-                                        {% for attr in entry.attributes.keys %}
-                                            <th style="text-align: left">{{ attr }}</th>
-                                        {% endfor %}
-                                    </tr>
-                                    </thead>
-                                    <tbody>
-                                    <tr>
-                                        {% for value in entry.attributes.values %}
-                                            <td>{{ value | default:"-" }}</td>
-                                        {% endfor %}
-                                    </tr>
-                                    </tbody>
-                                </table>
-                            {% empty %}
-                                <h6>No entries included in the response of this operation.</h6>
-                            {% endfor %}
+                            {% include operation.details_template with operation=operation %}
                         </div>
                     </td>
                 </tr>
@@ -245,8 +113,8 @@
             </tbody>
         </table>
     {% else %}
-        <p>No LDAP operations were recorded for this domain during this request.</p>
+        <p>No LDAP operations was recorded on this domain during this request.</p>
     {% endif %}
 {% empty %}
-    <p>No LDAP connection has bound yet.</p>
+    <p>No LDAP connection has yet been bound.</p>
 {% endfor %}

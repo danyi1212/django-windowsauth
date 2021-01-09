@@ -1,0 +1,60 @@
+<h4>Request</h4>
+<details>
+    <summary>Raw</summary>
+    <pre class="djdt-stack">{{ operation.raw_request | linebreaksbr }}</pre>
+</details>
+<div>
+    {% block request %}
+    {% endblock request %}
+</div>
+<h4>Response</h4>
+<details>
+    <summary>Raw</summary>
+    <pre class="djdt-stack">{{ operation.raw_result | linebreaksbr }}</pre>
+</details>
+<div>
+    {% block response %}
+        <p>
+            <span class="djdt-color" style="background-color:green"></span>
+            <strong>Status:</strong> {{ operation.result.result }}
+            <span class="djdt-color" style="background-color:green"></span>
+            <strong>Description:</strong> {{ operation.result_description }}
+            <span class="djdt-color" style="background-color:green"></span>
+            <strong>Type:</strong> {{ operation.result.type }}
+            {% if operation.result.dn %}
+                <span class="djdt-color" style="background-color:green"></span>
+                <strong>DN:</strong> {{ operation.result.dn }}
+            {% endif %}
+            {% if operation.result.message %}
+                <span class="djdt-color" style="background-color:green"></span>
+                <strong>Message:</strong> {{ operation.result.message }}
+            {% endif %}
+        </p>
+        {% if operation.result.referrals %}
+            <p>
+                <span class="djdt-color" style="background-color:green"></span>
+                <strong>Referrals:</strong> {{ operation.result.referrals | join:", " }}
+            </p>
+        {% endif %}
+    {% endblock response %}
+</div>
+{% if operation.stacktrace %}
+    <details>
+        <summary>Stacktrace</summary>
+        <pre class="djdt-stack">{{ operation.stacktrace }}</pre>
+    </details>
+{% endif %}
+<h4>Entries{% if operation.entry_count > 10 %} (first 10){% endif %}</h4>
+{% block entries %}
+    {% for entry in operation.entries|slice:":10" %}
+        <div>
+            {% include entry.template with entry=entry %}
+            <details>
+                <summary>Raw</summary>
+                <pre class="djdt-stack">{{ entry.json | linebreaksbr }}</pre>
+            </details>
+        </div>
+    {% empty %}
+        <h6>No entries included in the response to this operation.</h6>
+    {% endfor %}
+{% endblock %}

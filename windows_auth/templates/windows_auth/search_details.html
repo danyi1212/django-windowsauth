@@ -1,0 +1,37 @@
+{% extends "windows_auth/details_base.html" %}
+{% block request %}
+    <p>
+        <span class="djdt-color" style="background-color:blue"></span>
+        <strong>Search Base:</strong> {{ operation.request.base }}
+        <span class="djdt-color" style="background-color:blue"></span>
+        <strong>Search Scope:</strong> {{ operation.scope_label }}
+        <span class="djdt-color" style="background-color:blue"></span>
+        <strong>Dereference Policy:</strong> {{ operation.dereference_alias_label }}
+        {% if operation.request.controls %}
+            <span class="djdt-color" style="background-color:blue"></span>
+            <strong>Controls:</strong> {{ operation.request.controls }}
+        {% endif %}
+    </p>
+    {% if operation.request.pagedSize %}
+        <p>
+            <span class="djdt-color" style="background-color:blue"></span>
+            <strong>Page Size:</strong> {{ operation.request.pageSize }}
+            <span class="djdt-color" style="background-color:blue"></span>
+            <strong>Paging Supported:</strong> {{ operation.request.pagedCriticality | yesno }}
+            <span class="djdt-color" style="background-color:blue"></span>
+            <strong>Page Cookie:</strong> {{ operation.request.pagedCookie }}
+        </p>
+    {% endif %}
+    <p>
+        <span class="djdt-color" style="background-color:blue"></span>
+        <strong>Size Limit:</strong> {{ operation.request.sizeLimit }}
+        <span class="djdt-color" style="background-color:blue"></span>
+        <strong>Time Limit:</strong> {{ operation.request.timeLimit }}
+        <span class="djdt-color" style="background-color:blue"></span>
+        <strong>Types Only:</strong> {{ operation.request.typesOnly }}
+    </p>
+    <p>
+        <span class="djdt-color" style="background-color:blue"></span>
+        <strong>Attributes:</strong> {{ operation.request.attributes | join:", " }}
+    </p>
+{% endblock request %}
