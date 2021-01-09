@@ -1,4 +1,3 @@
-import inspect
 import json
 from functools import wraps
 
@@ -38,7 +37,7 @@ class OperationInfo:
     @cached_property
     def title(self) -> str:
         req_type = self.request.get("type")
-        if req_type is "searchRequest":
+        if req_type == "searchRequest":
             return self.request.get("filter")
         elif req_type in ("modifyRequest", "addRequest", "delRequest", "compareRequest"):
             return self.request.get("entry")
@@ -157,7 +156,7 @@ class OperationInfo:
         HTML template path for entry details
         """
         req_type = self.request.get("type")
-        if req_type is "searchRequest":
+        if req_type == "searchRequest":
             return "windows_auth/search_details.html"
         elif req_type in ("modifyRequest", "addRequest", "delRequest", "compareRequest"):
             return "windows_auth/modify_details.html"
@@ -165,7 +164,7 @@ class OperationInfo:
             return "windows_auth/details_base.html"
 
     @cached_property
-    def change_labels(self) -> str:
+    def change_labels(self) -> list:
         """
         Describe change in a sentence
         """
