@@ -228,7 +228,7 @@ DEBUG_TOOLBAR_PANELS = [
     'windows_auth.panels.LDAPPanel',
 ]
 
-WAUTH_RESYNC_DELTA = True
+# WAUTH_RESYNC_DELTA = True
 WAUTH_REQUIRE_RESYNC = False
 # WAUTH_USE_CACHE = True
 
@@ -248,6 +248,7 @@ WAUTH_DOMAINS = {
         SUPERUSER_GROUPS=None,
         COLLECT_METRICS=True,
         READ_ONLY=False,
+        # USER_QUERY_FIELD="email",
         GROUP_MAP={
             "demo": "Domain Admins",
             "demo2": "Domain Admins",

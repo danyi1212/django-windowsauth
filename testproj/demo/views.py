@@ -1,12 +1,15 @@
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.urls import reverse_lazy
+from django.utils.decorators import method_decorator
 from django.views.generic import TemplateView, FormView
 from ldap3 import Writer
 
 from demo.forms import ComputerDescriptionForm
+from windows_auth.decorators import ldap_sync_required, domain_required
 from windows_auth.ldap import get_ldap_manager
 
 
-class IndexView(TemplateView):
+class IndexView(TemplateView, LoginRequiredMixin):
     template_name = "demo/index.html"
 
     def get_context_data(self, **kwargs):
@@ -15,6 +18,8 @@ class IndexView(TemplateView):
         return context
 
 
+@method_decorator(ldap_sync_required(raise_exception=True), name="dispatch")
+# @method_decorator(domain_required(domain="NOTEXAMPLE", bypass_superuser=False), name="dispatch")
 class ComputersView(FormView):
     template_name = "demo/computers.html"
     form_class = ComputerDescriptionForm
