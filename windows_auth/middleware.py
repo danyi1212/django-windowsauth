@@ -40,7 +40,7 @@ class UserSyncMiddleware:
                         cache.set(cache_key, True, timeout)
                 else:
                     # check via database query
-                    if ldap_user.last_sync < timezone.now() - timezone.timedelta(seconds=timeout):
+                    if not ldap_user.last_sync or ldap_user.last_sync < timezone.now() - timezone.timedelta(seconds=timeout):
                         ldap_user.sync()
             except LDAPUser.DoesNotExist:
                 # user is getting created the first time

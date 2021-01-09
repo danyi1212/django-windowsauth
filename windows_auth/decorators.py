@@ -54,7 +54,7 @@ def ldap_sync_required(function=None, timedelta=None, login_url=None, allow_non_
                     user.ldap.sync()
                 else:
                     # check via database query
-                    if not timedelta or user.ldap.last_sync < timezone.now() - timedelta:
+                    if not timedelta or not user.ldap.last_sync or user.ldap.last_sync < timezone.now() - timedelta:
                         user.ldap.sync()
 
                 return True
