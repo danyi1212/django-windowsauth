@@ -2,6 +2,7 @@ from django.contrib.auth.decorators import user_passes_test
 from django.utils import timezone
 
 from windows_auth.conf import WAUTH_USE_CACHE
+from windows_auth.models import LDAPUser
 
 
 def domain_required(function=None, domain=None, login_url=None, bypass_superuser=True):
@@ -16,7 +17,7 @@ def domain_required(function=None, domain=None, login_url=None, bypass_superuser
         if bypass_superuser and user.is_superuser:
             return True
 
-        if user.is_authenticated and user.ldap:
+        if user.is_authenticated and LDAPUser.objects.filter(user=user).exists():
             if domain:
                 # for specific domain
                 return user.ldap.domain == domain
@@ -47,7 +48,7 @@ def ldap_sync_required(function=None, timedelta=None, login_url=None, allow_non_
     :param raise_exception: raise sync exception and cause status code 500
     """
     def check_sync(user):
-        if user.is_authenticated and user.ldap:
+        if user.is_authenticated and LDAPUser.objects.filter(user=user).exists():
             try:
                 if WAUTH_USE_CACHE:
                     user.ldap.sync()

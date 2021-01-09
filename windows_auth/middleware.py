@@ -18,8 +18,9 @@ class UserSyncMiddleware:
         :param request: HTTP Request
         :return: HTTP Response
         """
+
         if (request.user and request.user.is_authenticated
-                and request.user.ldap and WAUTH_RESYNC_DELTA not in (None, False)):
+                and LDAPUser.objects.filter(user=request.user).exists() and WAUTH_RESYNC_DELTA not in (None, False)):
             try:
                 # convert timeout to seconds
                 if isinstance(WAUTH_RESYNC_DELTA, timezone.timedelta):
@@ -54,6 +55,5 @@ class UserSyncMiddleware:
                         return WAUTH_ERROR_RESPONSE(request, e)
                     else:
                         raise e
-
         response = self.get_response(request)
         return response
