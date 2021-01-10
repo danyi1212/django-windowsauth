@@ -12,6 +12,7 @@ Arguments
     * **--static**, **-s** Create a ``web.config`` to configure IIS to serve the static folder.
     * **--media**, **-m** Create a ``web.config`` to configure IIS to serve the media folder.
     * **--windowsauth**, **-w** Configure Windows Authentication as the only IIS Authentication option.
+    * **--https** Configure HTTP to HTTPS Redirect using IIS's URL Rewrite module.
     * **--logs**, **-l** Path for the WFastCGI logs.
     * **--override**, **-f** Force override existing files.
 

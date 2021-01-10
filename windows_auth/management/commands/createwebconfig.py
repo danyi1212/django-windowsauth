@@ -2,7 +2,7 @@ import os
 from pathlib import Path
 
 from django.conf import settings
-from django.core.management.base import BaseCommand, CommandParser, CommandError
+from django.core.management.base import BaseCommand, CommandParser
 from django.template.loader import render_to_string
 
 
@@ -14,10 +14,12 @@ class Command(BaseCommand):
         parser.add_argument("--static", "-s", action="store_true", help="Configure IIS to serve static folder")
         parser.add_argument("--media", "-m", action="store_true", help="Configure IIS to serve media folder")
         parser.add_argument("--windowsauth", "-w", action="store_true", help="Configure IIS for Windows Authentication")
+        parser.add_argument("--https", action="store_true", help="Configure IIS to redirect HTTP to HTTPS")
         parser.add_argument("--logs", "-l", default=settings.BASE_DIR / "logs", type=str, help="Logs folder path")
         parser.add_argument("--override", "-f", action="store_true", help="Force override existing files")
 
-    def handle(self, name=None, static=False, media=False, windowsauth=False, logs=None, override=False, **options):
+    def handle(self, name=None, static=False, media=False,
+               windowsauth=False, https=False, logs=None, override=False, **options):
         mode = "w" if override else "x"
         virtual_dirs = []
 
@@ -48,6 +50,7 @@ class Command(BaseCommand):
                         "wsgi": settings.WSGI_APPLICATION,
                         "logs_folder": logs,
                         "windows_auth": windowsauth,
+                        "https": https,
                     })
                 )
             print("Created web.config file")
