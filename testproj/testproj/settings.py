@@ -10,9 +10,9 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/3.1/ref/settings/
 """
 import os
-from dataclasses import dataclass
 from pathlib import Path
 
+import ldap3
 from ldap3.utils.log import set_library_log_detail_level, BASIC, EXTENDED
 
 from windows_auth.settings import LDAPSettings
@@ -233,24 +233,22 @@ DEBUG_TOOLBAR_PANELS = [
 # WAUTH_USE_CACHE = True
 
 
-@dataclass()
-class MyLDAPSettings(LDAPSettings):
-    USE_SSL: bool = False
-    EXTRA_SETTING: str = "Hello, world!"
-
-
 WAUTH_DOMAINS = {
-    "EXAMPLE": MyLDAPSettings(
+    "EXAMPLE": LDAPSettings(
         SERVER="example.local",
         SEARCH_BASE="DC=example,DC=local",
         USERNAME="EXAMPLE\\django_sync",
         PASSWORD="Aa123456!",
+        USE_SSL=True,
         COLLECT_METRICS=True,
         READ_ONLY=False,
         GROUP_MAP={
             "demo": "Domain Admins",
             "demo2": "Domain Admins",
         },
+        CONNECTION_OPTIONS={
+            "authentication": ldap3.NTLM,
+        }
     ),
     # "EXAMPLE": {
     #         "SERVER": "example.local",

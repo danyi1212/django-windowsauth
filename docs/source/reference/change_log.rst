@@ -11,6 +11,7 @@ Release date: Coming soon!
 - **ADDED**: LDAP Panel for ``django-debug-toolbar``
 - **ADDED**: LDAP Setting ``COLLECT_METRICS``
 - **ADDED**: Auto-close all LDAP connection on before process exit
+- **ADDED**: View decorators ``domain_required`` and ``ldap_sync_required``
 
 1.2.0
 -----

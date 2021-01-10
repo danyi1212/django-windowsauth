@@ -88,7 +88,7 @@ If you have setup logging and email reporting for server admins, you can also **
 
 .. note::
     You can configure this per view with the ``ldap_sync_required`` decorator.
-    See the reference at :docs:`./decorators`
+    See the reference at :doc:`decorators`
 
 WAUTH_ERROR_RESPONSE
 ~~~~~~~~~~~~~~~~~~~~
