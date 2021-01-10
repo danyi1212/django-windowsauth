@@ -80,11 +80,11 @@ class OperationInfo:
 
                 # template
                 if entry.get("type") == "searchResEntry":
-                    entry["template"] = "windows_auth/search_entry.html"
+                    entry["template"] = "windows_auth/panel/search_entry.html"
                 elif entry.get("type") in ("modifyResponse", "addResponse", "delResponse", "modDNResponse"):
-                    entry["template"] = "windows_auth/modify_entry.html"
+                    entry["template"] = "windows_auth/panel/modify_entry.html"
                 else:
-                    entry["template"] = "windows_auth/entry_base.html"
+                    entry["template"] = "windows_auth/panel/entry_base.html"
 
                 result.append(entry)
 
@@ -157,11 +157,11 @@ class OperationInfo:
         """
         req_type = self.request.get("type")
         if req_type == "searchRequest":
-            return "windows_auth/search_details.html"
+            return "windows_auth/panel/search_details.html"
         elif req_type in ("modifyRequest", "addRequest", "delRequest", "compareRequest"):
-            return "windows_auth/modify_details.html"
+            return "windows_auth/panel/modify_details.html"
         else:
-            return "windows_auth/details_base.html"
+            return "windows_auth/panel/details_base.html"
 
     @cached_property
     def change_labels(self) -> list:
@@ -216,7 +216,7 @@ def get_response_decorator(func, domain: str):
 class LDAPPanel(Panel):
     title = "LDAP Connection Tracing"
     nav_title = "LDAP"
-    template = "windows_auth/panel.html"
+    template = "windows_auth/panel/panel.html"
     has_content = True
 
     def enable_instrumentation(self):
