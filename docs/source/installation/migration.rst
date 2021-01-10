@@ -38,8 +38,14 @@ In case you would still want to **also** migrate all users now, you can do this 
 >>> for user in LDAPUsers.objects.all():
 >>>     user.sync()
 
+To 1.3.0
+--------
+
+No required changes for migration is needed.
+
+
 To 1.2.0
------
+--------
 
 - Add the ``UserSyncMiddleware`` to ``MIDDLEWARE`` setting like so:
 
