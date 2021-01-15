@@ -1,13 +1,17 @@
 from typing import Callable, Union, Optional, Iterable
 
 from django.conf import settings
-from django.core.exceptions import ImproperlyConfigured
 from django.http import HttpResponse
 
 from django.utils import timezone
 
+from windows_auth import logger
+
 if not hasattr(settings, "WAUTH_DOMAINS"):
-    raise ImproperlyConfigured("The required setting WAUTH_DOMAINS is missing.")
+    logger.warn("The required setting WAUTH_DOMAINS is missing.")
+
+# Settings for each domain
+WAUTH_DOMAINS: dict = getattr(settings, "WAUTH_DOMAINS", {})
 
 # Expect REMOTE_USER value to be in SPN scheme
 WAUTH_USE_SPN: bool = getattr(settings, "WAUTH_USE_SPN", False)

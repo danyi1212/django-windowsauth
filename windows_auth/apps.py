@@ -1,5 +1,6 @@
 import atexit
 
+from django.db import OperationalError
 from ldap3.core.exceptions import LDAPException
 from django.apps import AppConfig
 from django.db.models import Count
@@ -11,8 +12,7 @@ class WindowsAuthConfig(AppConfig):
     name = 'windows_auth'
 
     def ready(self):
-        from django.conf import settings
-        from windows_auth.conf import WAUTH_IGNORE_SETTING_WARNINGS, WAUTH_PRELOAD_DOMAINS
+        from windows_auth.conf import WAUTH_IGNORE_SETTING_WARNINGS, WAUTH_PRELOAD_DOMAINS, WAUTH_DOMAINS
         from windows_auth.settings import DEFAULT_DOMAIN_SETTING
         from windows_auth.ldap import get_ldap_manager, close_connections
 
@@ -23,18 +23,22 @@ class WindowsAuthConfig(AppConfig):
         # or modifying the WAUTH_PRELOAD_DOMAINS setting to False.
 
         # check about users with domain missing from settings
-        if not WAUTH_IGNORE_SETTING_WARNINGS and DEFAULT_DOMAIN_SETTING not in settings.WAUTH_DOMAINS:
-            from windows_auth.models import LDAPUser
-            missing_domains = LDAPUser.objects.exclude(domain__in=settings.WAUTH_DOMAINS.keys())
-            if missing_domains.exists():
-                for result in missing_domains.values("domain").annotate(count=Count("pk")):
-                    logger.warning(f"Settings for domain \"{result.get('domain')}\" are missing from WAUTH_DOMAINS "
-                                   f"({result.get('count')} users found)")
+        if not WAUTH_IGNORE_SETTING_WARNINGS and DEFAULT_DOMAIN_SETTING not in WAUTH_DOMAINS:
+            try:
+                from windows_auth.models import LDAPUser
+                missing_domains = LDAPUser.objects.exclude(domain__in=WAUTH_DOMAINS.keys())
+                if missing_domains.exists():
+                    for result in missing_domains.values("domain").annotate(count=Count("pk")):
+                        logger.warning(f"Settings for domain \"{result.get('domain')}\" are missing from WAUTH_DOMAINS "
+                                       f"({result.get('count')} users found)")
+            except OperationalError as e:
+                # Table does not exist yet, migration is pending
+                logger.warn(e)
 
         # configure default preload domains
         preload_domains = WAUTH_PRELOAD_DOMAINS
         if preload_domains in (None, True):
-            preload_domains = list(settings.WAUTH_DOMAINS.keys())
+            preload_domains = list(WAUTH_DOMAINS.keys())
             if DEFAULT_DOMAIN_SETTING in preload_domains:
                 preload_domains.remove(DEFAULT_DOMAIN_SETTING)
 

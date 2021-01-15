@@ -43,20 +43,17 @@ class LDAPSettings:
 
     @classmethod
     def for_domain(cls, domain: str):
-        from django.conf import settings as django_settings
+        from windows_auth.conf import WAUTH_DOMAINS
 
-        if not hasattr(django_settings, "WAUTH_DOMAINS"):
-            raise ImproperlyConfigured("The required setting WAUTH_DOMAINS is missing.")
-
-        if domain not in django_settings.WAUTH_DOMAINS and DEFAULT_DOMAIN_SETTING not in django_settings.WAUTH_DOMAINS:
+        if domain not in WAUTH_DOMAINS and DEFAULT_DOMAIN_SETTING not in WAUTH_DOMAINS:
             raise ImproperlyConfigured(f"Domain {domain} settings could not be found in WAUTH_DOMAINS setting.")
 
-        domain_settings = django_settings.WAUTH_DOMAINS.get(domain, {})
+        domain_settings = WAUTH_DOMAINS.get(domain, {})
         # when setting is an LDAPSetting object
         if isinstance(domain_settings, LDAPSettings):
             return domain_settings
 
-        default_settings = django_settings.WAUTH_DOMAINS.get(DEFAULT_DOMAIN_SETTING, {})
+        default_settings = WAUTH_DOMAINS.get(DEFAULT_DOMAIN_SETTING, {})
         # when domain setting
         if isinstance(default_settings, LDAPSettings):
             default_settings = asdict(default_settings)
