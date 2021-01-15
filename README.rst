@@ -9,7 +9,7 @@ django-windowsauth
     :target: https://github.com/danyi1212/django-windowsauth/graphs/commit-activity
     :alt: Maintained
    
-.. image:: https://static.pepy.tech/personalized-badge/django-windowsauth?period=total&units=international_system&left_color=grey&right_color=blue&left_text=Downloads
+.. image:: https://static.pepy.tech/personalized-badge/django-windowsauth?period=total&units=international_system&left_color=grey&right_color=blue&left_text=Downloads&service=github
     :target: https://pepy.tech/project/django-windowsauth
 
 **Easy integration and deployment of Django projects into Windows Environments.**
