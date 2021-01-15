@@ -2,6 +2,15 @@
 Change Log
 =============
 
+1.3.1
+-----
+
+Release date: Jan 15, 2021
+
+- **MODIFIED**: Remove requirement for ``WAUTH_DOMAIN`` setting
+- **FIXED**: ``OperationalError`` Exception before first migration
+- **FIXED**: Incorrect packaging configuration
+
 1.3.0
 -----
 
