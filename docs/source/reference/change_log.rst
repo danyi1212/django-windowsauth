@@ -2,6 +2,14 @@
 Change Log
 =============
 
+1.3.2
+-----
+
+Release date: Jan 26, 2021
+
+- **FIXED**: ``ProgrammingError`` Exception before first migration
+- **FIXED**: Packaging configuration missing templates
+
 1.3.1
 -----
 
