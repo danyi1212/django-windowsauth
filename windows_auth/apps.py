@@ -1,6 +1,6 @@
 import atexit
 
-from django.db import OperationalError
+from django.db import DatabaseError
 from ldap3.core.exceptions import LDAPException
 from django.apps import AppConfig
 from django.db.models import Count
@@ -31,8 +31,8 @@ class WindowsAuthConfig(AppConfig):
                     for result in missing_domains.values("domain").annotate(count=Count("pk")):
                         logger.warning(f"Settings for domain \"{result.get('domain')}\" are missing from WAUTH_DOMAINS "
                                        f"({result.get('count')} users found)")
-            except OperationalError as e:
-                # Table does not exist yet, migration is pending
+            except DatabaseError as e:
+                # Table probably does not exist yet, migration is pending
                 logger.warn(e)
 
         # configure default preload domains
