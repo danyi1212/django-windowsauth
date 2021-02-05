@@ -14,7 +14,7 @@ Features
 - Authenticate via `IIS's Windows Authentication <https://docs.microsoft.com/en-us/iis/configuration/system.webserver/security/authentication/windowsauthentication/#:~:text=You%20can%20use%20Windows%20authentication,Windows%20accounts%20to%20identify%20users.&text=When%20you%20install%20and%20enable,the%20default%20protocol%20is%20Kerberos.>`_
 - Authorize against Active Directory using `ldap3 <https://ldap3.readthedocs.io/en/latest/>`_ package
 - Manage LDAP connections for easy integrations
-- (Coming soon) Debug using `django-debug-toolbar <https://django-debug-toolbar.readthedocs.io/en/latest/>`_
+- Debug using `django-debug-toolbar <https://django-debug-toolbar.readthedocs.io/en/latest/>`_
 
 .. toctree::
    :maxdepth: 1

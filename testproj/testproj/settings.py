@@ -228,10 +228,9 @@ DEBUG_TOOLBAR_PANELS = [
     'windows_auth.panels.LDAPPanel',
 ]
 
-# WAUTH_RESYNC_DELTA = True
+WAUTH_RESYNC_DELTA = True
 # WAUTH_REQUIRE_RESYNC = False
 # WAUTH_USE_CACHE = True
-
 
 WAUTH_DOMAINS = {
     "EXAMPLE": LDAPSettings(
@@ -248,14 +247,6 @@ WAUTH_DOMAINS = {
         },
         CONNECTION_OPTIONS={
             "authentication": ldap3.NTLM,
-        }
-    ),
-    # "EXAMPLE": {
-    #         "SERVER": "example.local",
-    #         "SEARCH_BASE": "DC=example,DC=local",
-    #         "USERNAME": lambda domain: f"{domain}\\django_sync",
-    #         "PASSWORD": "Aa123456!",
-    #         "USE_SSL": False,
-    #         "BLABLABLA": True,
-    #     },
+        },
+    )
 }

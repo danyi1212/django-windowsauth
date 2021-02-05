@@ -8,7 +8,7 @@ from django.utils import timezone
 from ldap3 import Reader, Entry, Attribute
 
 from windows_auth import logger
-from windows_auth.conf import WAUTH_USE_CACHE, WAUTH_USE_SPN
+from windows_auth.conf import WAUTH_USE_CACHE, WAUTH_USE_SPN, WAUTH_LOWERCASE_USERNAME
 from windows_auth.ldap import LDAPManager, get_ldap_manager
 from windows_auth.utils import LogExecutionTime
 
@@ -31,6 +31,30 @@ def _match_groups(reader: Reader, groups: Optional[Union[Iterable[str], str]], a
         return default
 
 
+class LDAPUserManager(models.Manager):
+
+    def create_user(self, username: str) -> User:
+        r"""
+        Create, save, synchronize against LDAP and return a User object.
+        :param username: Logon username (DOMAIN\username or username@domain.com)
+        :return: User object (not LDAPUser)
+        """
+        if WAUTH_USE_SPN:
+            assert "@" in username, "Username must be in username@domain.com format."
+            sam_account_name, domain = username.split("@", 2)
+        else:
+            assert "\\" in username, "Username must be in DOMAIN\\username format."
+            domain, sam_account_name = username.split("\\", 2)
+
+        if WAUTH_LOWERCASE_USERNAME:
+            sam_account_name = sam_account_name.lower()
+
+        user = get_user_model().objects.create_user(username=sam_account_name)
+        ldap_user = self.create(user=user, domain=domain)
+        ldap_user.sync()
+        return user
+
+
 class LDAPUser(models.Model):
     user: User = models.OneToOneField(get_user_model(), on_delete=models.CASCADE, related_name="ldap")
 
@@ -38,6 +62,8 @@ class LDAPUser(models.Model):
 
     last_sync = models.DateTimeField(blank=True, null=True, default=None,
                                      help_text="Last time performed LDAP sync for user attributes and group membership")
+
+    objects = LDAPUserManager()
 
     _ldap_user_cache: Optional[Entry] = None
 

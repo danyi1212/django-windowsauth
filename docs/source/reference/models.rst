@@ -5,7 +5,7 @@ Models
 LDAPUser
 --------
 
-Used to same user's domain information and perform domain related actions.
+Used to store user domain information and perform domain related actions.
 
 Fields:
     * **user** - One to one relation for user model using ``get_user_model`` function.
@@ -24,3 +24,11 @@ For example, you can trigger sync with ``request.user.ldap.sync()``, or display 
 .. note::
     The ``LDAPUser`` is represented by the **Down-level Logon Name** or **SPN** determined by the ``WAUTH_USE_SPN`` setting.
     More on that in the :doc:`./settings_reference`.
+
+LDAPUserManager
+---------------
+
+LDAPUser Accessible via ``LDAPUser.objects``.
+
+Methods:
+    * **create_user()** - Create a new user from LDAP.
