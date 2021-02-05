@@ -38,6 +38,11 @@ In case you would still want to **also** migrate all users now, you can do this 
 >>> for user in LDAPUsers.objects.all():
 >>>     user.sync()
 
+To 1.4.0
+--------
+
+- (optional) Remove duplicated groups between ``SUPERUSER_GROUPS``, ``STAFF_GROUPS`` and ``ACTIVE_GROUPS`` ldap settings, or set ``PROPAGATE_GROUPS`` to ``False``.
+
 To 1.3.0
 --------
 

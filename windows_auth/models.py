@@ -164,17 +164,9 @@ class LDAPUser(models.Model):
         }
 
         # check user flags
-        flags = []
-        if manager.settings.SUPERUSER_GROUPS:
-            flags.append(("is_superuser", manager.settings.SUPERUSER_GROUPS, False))
-        if manager.settings.STAFF_GROUPS:
-            flags.append(("is_staff", manager.settings.STAFF_GROUPS, False))
-        if manager.settings.ACTIVE_GROUPS:
-            flags.append(("is_active", manager.settings.ACTIVE_GROUPS, True))
-
-        # update user flags
-        for flag, groups, default in flags:
-            updated_fields[flag] = _match_groups(group_reader, groups, manager.settings.GROUP_ATTRS, default=default)
+        for flag, groups in manager.settings.get_flag_map().items():
+            if groups:
+                updated_fields[flag] = _match_groups(group_reader, groups, manager.settings.GROUP_ATTRS)
 
         # check group membership
         group_membership: Dict[Group, bool] = {}

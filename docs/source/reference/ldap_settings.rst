@@ -351,7 +351,7 @@ If the user is member in **one** of the listed LDAP groups, the ``is_superuser``
 The group membership is checked by comparing the **groups listed in this setting** to the **LDAP Group Attributes** listed in ``GROUP_ATTRS`` setting.
 
 STAFF_GROUPS
-~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~
 
 | Type ``tuple`` or ``str``; Default to ``Administrators``; Not Required.
 | LDAP Groups to check membership for setting Django User's "is_staff" flag.
@@ -365,7 +365,7 @@ If the user is member in **one** of the listed LDAP groups, the ``is_staff`` fla
 The group membership is checked by comparing the **groups listed in this setting** to the **LDAP Group Attributes** listed in ``GROUP_ATTRS`` setting.
 
 ACTIVE_GROUPS
-~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~
 
 | Type ``tuple`` or ``str``; Default to ``None``; Not Required.
 | LDAP Groups to check membership for setting Django User's "is_active" flag.
@@ -377,6 +377,16 @@ If the user is member in **one** of the listed LDAP groups, the ``is_active`` fl
 | Configuring this setting to a **string** is equal to a **single length tuple**.
 
 The group membership is checked by comparing the **groups listed in this setting** to the **LDAP Group Attributes** listed in ``GROUP_ATTRS`` setting.
+
+
+PROPAGATE_GROUPS
+~~~~~~~~~~~~~~~~
+
+| Type ``bool``; Default to ``True``; Not Required.
+| Propagate groups in order Superusers > Staff > Active.
+
+When set to ``True``, all groups configured in ``SUPERUSER_GROUPS`` will be added to ``STAFF_GROUPS``
+and ``ACTIVE_GROUPS``, and groups configured in ``STAFF_GROUPS`` with be added to ``ACTIVE_GROUPS``.
 
 
 GROUP_MAP
@@ -397,3 +407,21 @@ Groups that are **not listed** in this setting will **not be affected** by this.
 
 .. warning::
     When a group that is configured in this setting is missing, it will be **created automatically**.
+
+FLAG_MAP
+~~~~~~~~
+
+| Type ``dict``; Default is ``{}``; Not Required.
+| Map User object boolean fields to one or more LDAP Groups membership check.
+
+Used to synchronize boolean fields from the User object as a group membership check.
+If the user is member in **one** of the listed LDAP groups, the respective boolean field will be set to ``True``,
+otherwise it is set to ``False``.
+
+| Configuring this setting to ``None`` will not modify the field.
+| Configuring this setting to a **string** is equal to a **single length tuple**.
+
+The group membership is checked by comparing the **groups listed in this setting** to the **LDAP Group Attributes** listed in ``GROUP_ATTRS`` setting.
+
+User's ``is_superuser``, ``is_staff`` and ``is_active`` are added automatically from settings ``SUPERUSER_GROUPS``,
+``STAFF_GROUPS`` and ``ACTIVE_GROUPS`` respectively.

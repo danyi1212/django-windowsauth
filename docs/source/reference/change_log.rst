@@ -2,6 +2,14 @@
 Change Log
 =============
 
+1.4.0
+-----
+
+Release date: coming soon
+
+- **ADDED**: LDAPUserManager for manually creating users from LDAP.
+- **IMPROVED**: LDAP Settings for Group Membership check propagate to one another.
+
 1.3.2
 -----
 
