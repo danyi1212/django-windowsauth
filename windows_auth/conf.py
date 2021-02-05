@@ -17,7 +17,7 @@ WAUTH_DOMAINS: dict = getattr(settings, "WAUTH_DOMAINS", {})
 WAUTH_USE_SPN: bool = getattr(settings, "WAUTH_USE_SPN", False)
 # Minimum time until automatic re-sync
 WAUTH_RESYNC_DELTA: Optional[Union[str, int, timezone.timedelta]] = getattr(settings, "WAUTH_RESYNC_DELTA",
-                                                                            timezone.timedelta(minutes=10))
+                                                                            timezone.timedelta(days=1))
 # Use cache instead of model for determining re-sync
 WAUTH_USE_CACHE: bool = getattr(settings, "WAUTH_USE_CACHE", False)
 # Raise exception and return Error 500 when user failed to synced to domain

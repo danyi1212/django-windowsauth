@@ -9,6 +9,7 @@ Release date: coming soon
 
 - **ADDED**: LDAPUserManager for manually creating users from LDAP.
 - **IMPROVED**: LDAP Settings for Group Membership check propagate to one another.
+- **MODIFIED**: Increased the default ``WAUTH_RESYNC_DELTA`` to every 1 day.
 
 1.3.2
 -----

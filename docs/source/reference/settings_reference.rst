@@ -41,7 +41,7 @@ This can be used with ``lambda`` functions for lazy setting values.
 WAUTH_RESYNC_DELTA
 ~~~~~~~~~~~~~~~~~~
 
-| Type ``timedelta``, ``str``, ``int`` or ``None``; Default to ``timedelta(minutes=10)``; Not Required.
+| Type ``timedelta``, ``str``, ``int`` or ``None``; Default to ``timedelta(days=1)``; Not Required.
 | Minimum time (seconds) until automatic re-sync user's fields and permissions against LDAP.
 
 Configure when to **automatically synchronize** the user's fields and groups (and permissions) against Active Directory via LDAP.
