@@ -45,17 +45,18 @@ class Command(BaseCommand):
 
     def add_arguments(self, parser: CommandParser):
         parser.add_argument("command", help="Management command, wrapped with \"command\"")
-        parser.add_argument("--predefined", action="store_true", help="Create a predefined task")
-        parser.add_argument("--name", type=str, help="Task name")
-        parser.add_argument("--desc", type=str, default="", help="Task description")
-        parser.add_argument("--identity", type=str, default=LOCAL_SERVICE, help="Task principle identity"),
-        parser.add_argument("--folder", type=str, default=os.path.basename(settings.BASE_DIR),
+        parser.add_argument("-p", "--predefined", action="store_true",
+                            help=f"Create a predefined task {tuple(PREDEFINED_TASKS.keys())}")
+        parser.add_argument("-n", "--name", type=str, help="Task name")
+        parser.add_argument("-d", "--desc", type=str, default="", help="Task description")
+        parser.add_argument("-u", "--identity", type=str, default=LOCAL_SERVICE, help="Task principle identity"),
+        parser.add_argument("-f", "--folder", type=str, default=os.path.basename(settings.BASE_DIR),
                             help="Task folder location")
-        parser.add_argument("--interval", type=parse_datetime,
+        parser.add_argument("-i", "--interval", type=parse_datetime,
                             help="Task interval as timedelta kwargs, e.g. \"days=1,hours=12.5\".")
-        parser.add_argument("--random", type=parse_datetime,
+        parser.add_argument("-r", "--random", type=parse_datetime,
                             help="Randomize execution time as timedelta kwargs, e.g. \"days=1,hours=12.5\".")
-        parser.add_argument("--timeout", type=parse_datetime, default="hours=1",
+        parser.add_argument("-t", "--timeout", type=parse_datetime, default="hours=1",
                             help="Execution Time Limit as timedelta kwargs, e.g. \"days=1,hours=12.5\".")
         parser.add_argument("--priority", type=int, default=3,
                             help="Task Priority "
