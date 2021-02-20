@@ -30,6 +30,7 @@ Features
 - Authorize against **Active Directory** using `ldap3 <https://ldap3.readthedocs.io/en/latest/>`_ package
 - Manage **LDAP Connections** for easy integrations
 - Debug using `django-debug-toolbar <https://django-debug-toolbar.readthedocs.io/en/latest/>`_
+- **NEW** Create Task Schedulers for Django management commands
 
 Quick Start
 -----------

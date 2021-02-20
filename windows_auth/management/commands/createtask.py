@@ -46,7 +46,7 @@ class Command(BaseCommand):
     def add_arguments(self, parser: CommandParser):
         parser.add_argument("command", help="Management command, wrapped with \"command\"")
         parser.add_argument("-p", "--predefined", action="store_true",
-                            help=f"Create a predefined task {tuple(PREDEFINED_TASKS.keys())}")
+                            help=f"Create from a predefined task {tuple(PREDEFINED_TASKS.keys())}")
         parser.add_argument("-n", "--name", type=str, help="Task name")
         parser.add_argument("-d", "--desc", type=str, default="", help="Task description")
         parser.add_argument("-u", "--identity", type=str, default=LOCAL_SERVICE, help="Task principle identity"),

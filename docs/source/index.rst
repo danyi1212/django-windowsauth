@@ -15,6 +15,7 @@ Features
 - Authorize against Active Directory using `ldap3 <https://ldap3.readthedocs.io/en/latest/>`_ package
 - Manage LDAP connections for easy integrations
 - Debug using `django-debug-toolbar <https://django-debug-toolbar.readthedocs.io/en/latest/>`_
+- **NEW** Create Task Schedulers for Django management commands
 
 .. toctree::
    :maxdepth: 1
@@ -30,6 +31,7 @@ Features
    :caption: How-to Guides
 
    howto/serve_static
+   howto/create_tasks
    howto/custom_user_fields
    howto/using_ldap_manager
    howto/manage_secrets
