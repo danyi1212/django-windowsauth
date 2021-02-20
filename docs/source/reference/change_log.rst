@@ -5,10 +5,11 @@ Change Log
 1.4.0
 -----
 
-Release date: coming soon
+Release date: Feb. 20, 2021
 
 - **ADDED**: LDAPUserManager for manually creating users from LDAP.
 - **ADDED**: ``createtask`` management command for creating Task Scheduler jobs.
+- **ADDED**: ``ldap_user_sync`` signal.
 - **IMPROVED**: LDAP Settings for Group Membership check propagate to one another.
 - **MODIFIED**: Increased the default ``WAUTH_RESYNC_DELTA`` to every 1 day.
 
