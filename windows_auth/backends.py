@@ -13,7 +13,7 @@ class WindowsAuthBackend(RemoteUserBackend):
         added to the request by IIS Windows Authentication feature.
 
         By default, value is expected in Credentials Management API's Down-Level Logon Name scheme (DOMAIN\UserName).
-        Use WAUTH_USE_SPN to expect value to be is Credentials Management API's User Principle Name scheme (UserName@DomainFQDN.com).
+        Use WAUTH_USE_SPN to expect value to be is Credentials Management API's User Principal Name scheme (UserName@DomainFQDN.com).
 
         For more information see docs at https://docs.microsoft.com/en-us/windows/win32/secauthn/user-name-formats#down-level-logon-name.
         :param username: raw REMOTE_USER header value
