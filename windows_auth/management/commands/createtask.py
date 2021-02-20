@@ -1,6 +1,7 @@
 import os
 from argparse import ArgumentTypeError
 
+from django.conf import settings
 from django.core.management import BaseCommand, CommandParser, CommandError
 from django.utils import timezone
 from pythoncom import com_error
@@ -41,7 +42,7 @@ class Command(BaseCommand):
                             help="Task description")
         parser.add_argument("--identity", type=str, default=LOCAL_SERVICE,
                             help="Task principle identity"),
-        parser.add_argument("--folder", type=str, default=os.environ["DJANGO_SETTINGS_MODULE"].split(".")[0],
+        parser.add_argument("--folder", type=str, default=os.path.basename(settings.BASE_DIR),
                             help="Task folder location")
         parser.add_argument("--interval", type=parse_datetime,
                             help="Task interval as timedelta kwargs, e.g. \"days=1,hours=12.5\".")

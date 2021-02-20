@@ -8,7 +8,6 @@ from pythoncom import com_error
 from django.conf import settings
 from django.utils import timezone
 
-_PROJECT_NAME = os.path.basename(settings.BASE_DIR)
 _PYTHON_PATH = str(Path(os.environ.get("VIRTUAL_ENV")) / "Scripts" / "python.exe")
 
 LOCAL_SYSTEM = "NT Authority\\LocalSystem"
@@ -38,7 +37,7 @@ def create_task_definition(command_line, description: str = "", priority: int = 
     # create task
     task_def = _scheduler.NewTask(0)
     task_def.RegistrationInfo.Description = description
-    task_def.RegistrationInfo.Source = _PROJECT_NAME
+    task_def.RegistrationInfo.Source = os.path.basename(settings.BASE_DIR)
     # run as a Service Account
     task_def.Principal.LogonType = 5
     task_def.Principal.RunLevel = 1
@@ -95,16 +94,15 @@ def register_task(task_def, name: str, folder: str = None,
     :param username: Principal username (for service principals)
     :param password: Principal password
     """
-    # set default folder
-    if not folder:
-        folder = _PROJECT_NAME
-
-    # get or create folder
-    root_folder = _scheduler.GetFolder("\\")
-    try:
-        task_folder = root_folder.GetFolder(folder)
-    except com_error:
-        task_folder = root_folder.CreateFolder(folder)
+    if folder:
+        # get or create folder
+        root_folder = _scheduler.GetFolder("\\")
+        try:
+            task_folder = root_folder.GetFolder(folder)
+        except com_error:
+            task_folder = root_folder.CreateFolder(folder)
+    else:
+        task_folder = _scheduler.GetFolder("\\")
 
     # register task https://docs.microsoft.com/en-us/windows/win32/taskschd/taskfolder-registertaskdefinition
     task_folder.RegisterTaskDefinition(
