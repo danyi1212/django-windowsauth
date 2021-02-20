@@ -10,6 +10,7 @@ from ldap3 import Reader, Entry, Attribute
 from windows_auth import logger
 from windows_auth.conf import WAUTH_USE_CACHE, WAUTH_USE_SPN, WAUTH_LOWERCASE_USERNAME
 from windows_auth.ldap import LDAPManager, get_ldap_manager
+from windows_auth.signals import ldap_user_sync
 from windows_auth.utils import LogExecutionTime
 
 
@@ -200,6 +201,9 @@ class LDAPUser(models.Model):
         if current_fields != updated_fields:
             with LogExecutionTime(f"Perform field updates for user {self}"):
                 get_user_model().objects.filter(pk=self.user.pk).update(**updated_fields)
+
+        # send signals
+        ldap_user_sync.send(self, ldap_user=ldap_user, group_reader=group_reader)
 
         # update sync time
         if not WAUTH_USE_CACHE:
