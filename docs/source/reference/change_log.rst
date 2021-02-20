@@ -8,6 +8,7 @@ Change Log
 Release date: coming soon
 
 - **ADDED**: LDAPUserManager for manually creating users from LDAP.
+- **ADDED**: ``createtask`` management command for creating Task Scheduler jobs.
 - **IMPROVED**: LDAP Settings for Group Membership check propagate to one another.
 - **MODIFIED**: Increased the default ``WAUTH_RESYNC_DELTA`` to every 1 day.
 
