@@ -7,6 +7,7 @@ from django.utils import timezone
 from pythoncom import com_error
 
 from windows_auth.scheduler import create_task_definition, LOCAL_SERVICE, add_schedule_trigger, register_task
+from windows_auth.predefined_tasks import clear_sessions_task, clean_duplicate_history_task, clean_old_history_task, process_tasks_task
 
 
 def parse_datetime(string):
@@ -31,17 +32,23 @@ def parse_datetime(string):
         raise ArgumentTypeError(str(e).replace("__new__()", "timedelta()"))
 
 
+PREDEFINED_TASKS = {
+    "clearsessions": clear_sessions_task,
+    "clean_duplicate_history": clean_duplicate_history_task,
+    "clean_old_history": clean_old_history_task,
+    "process_tasks": process_tasks_task,
+}
+
+
 class Command(BaseCommand):
     help = "Add a management command to Windows Task Scheduler."
 
     def add_arguments(self, parser: CommandParser):
         parser.add_argument("command", help="Management command, wrapped with \"command\"")
-        parser.add_argument("--name", type=str,
-                            help="Task name")
-        parser.add_argument("--desc", type=str, default="",
-                            help="Task description")
-        parser.add_argument("--identity", type=str, default=LOCAL_SERVICE,
-                            help="Task principle identity"),
+        parser.add_argument("--predefined", action="store_true", help="Create a predefined task")
+        parser.add_argument("--name", type=str, help="Task name")
+        parser.add_argument("--desc", type=str, default="", help="Task description")
+        parser.add_argument("--identity", type=str, default=LOCAL_SERVICE, help="Task principle identity"),
         parser.add_argument("--folder", type=str, default=os.path.basename(settings.BASE_DIR),
                             help="Task folder location")
         parser.add_argument("--interval", type=parse_datetime,
@@ -54,15 +61,24 @@ class Command(BaseCommand):
                             help="Task Priority "
                                  "https://docs.microsoft.com/en-us/windows/win32/taskschd/tasksettings-priority")
 
-    def handle(self, command="", name=None, desc="", identity=LOCAL_SERVICE, folder=None,
+    def handle(self, command="", predefined=False, name=None, desc="", identity=LOCAL_SERVICE, folder=None,
                interval=None, random=None, timeout=None, priority=None, **options):
         try:
-            # create task definition
-            task_def = create_task_definition(command, description=desc, priority=priority, timeout=timeout)
-            # add trigger
-            if interval:
-                add_schedule_trigger(task_def, interval, random=random)
-            # register task
-            register_task(task_def, name or command.split(" ", 1)[0], folder=folder, username=identity)
+            if predefined:
+                # predefined tasks
+                if command in PREDEFINED_TASKS:
+                    create_task = PREDEFINED_TASKS[command]
+                    create_task(command=command, name=name, desc=desc, identity=identity, folder=folder,
+                                interval=interval, random=random, timeout=timeout, priority=priority)
+                else:
+                    raise CommandError(f"Predefined task for \"{command}\" does not exist.")
+            else:
+                # create task definition
+                task_def = create_task_definition(command, description=desc, priority=priority, timeout=timeout)
+                # add trigger
+                if interval:
+                    add_schedule_trigger(task_def, interval, random=random)
+                # register task
+                register_task(task_def, name or command.split(" ", 1)[0], folder=folder, username=identity)
         except com_error as e:
             raise CommandError("Failed to register task. Did you run as administrator?\n" + str(e))
