@@ -33,11 +33,12 @@ def clean_duplicate_history_task(**options):
     """
     Clean duplicate history records from all models with history every 3 hours (from django-simple-history).
     """
-    task_def = create_task_definition("clean_duplicate_history -m 60 --auto",
+    interval = options.get("interval") or timezone.timedelta(hours=3)
+    task_def = create_task_definition(f"clean_duplicate_history -m {interval.seconds / 60} --auto",
                                       description=options.get(
                                           "desc") or "Clean duplicate history records from database",
                                       **_get_options(options, "priority", "timeout"))
-    add_schedule_trigger(task_def, timezone.timedelta(hours=3))
+    add_schedule_trigger(task_def, interval)
     register_task(task_def, options.get("name") or "Clean Duplicate History",
                   **_get_options(options, "folder", "username", "password"))
 
