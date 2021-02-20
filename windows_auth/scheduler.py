@@ -58,6 +58,7 @@ def create_task_definition(command_line, description: str = "", priority: int = 
     # parameters https://docs.microsoft.com/en-us/windows/win32/taskschd/execaction
     action.Path = _PYTHON_PATH
     action.Arguments = _get_absolute_command_line(command_line)
+    action.WorkingDirectory = str(settings.BASE_DIR)
 
     return task_def
 
