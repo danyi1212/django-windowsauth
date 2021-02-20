@@ -85,7 +85,7 @@ def add_schedule_trigger(task_def, interval: timezone.timedelta,
 
 
 def register_task(task_def, name: str, folder: str = None,
-                  username: str = LOCAL_SERVICE, password: Optional[str] = None) -> None:
+                  username: str = LOCAL_SERVICE, password: Optional[str] = None):
     """
     Register new task definition to Windows Task Scheduler.
     :param task_def: Task Definition https://docs.microsoft.com/en-us/windows/win32/taskschd/taskdefinition.
@@ -93,6 +93,7 @@ def register_task(task_def, name: str, folder: str = None,
     :param folder: Task folder (created automatically).
     :param username: Principal username (for service principals)
     :param password: Principal password
+    :return: Registered Task https://docs.microsoft.com/en-us/windows/win32/taskschd/registeredtask
     """
     if folder:
         # get or create folder
@@ -105,11 +106,11 @@ def register_task(task_def, name: str, folder: str = None,
         task_folder = _scheduler.GetFolder("\\")
 
     # register task https://docs.microsoft.com/en-us/windows/win32/taskschd/taskfolder-registertaskdefinition
-    task_folder.RegisterTaskDefinition(
+    return task_folder.RegisterTaskDefinition(
         name,
         task_def,
         6,  # create or update
         username,
         password,
-        1 if password else 3  # password or interactive token (user is logged on)
+        1 if password else 3,  # password or interactive token (user is logged on)
     )
