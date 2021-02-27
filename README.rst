@@ -73,9 +73,11 @@ Quick Start
 
     MEDIA_URL = '/media/'
     MEDIA_ROOT = BASE_DIR / "media"
-
+    
 5. Generate **web.config** files with `py manage.py createwebconfig -s -m`
 6. Create new IIS Website from the project files
+
+If you don't need Windows Authentication on your site, skip adding the middleware and authentication backend.
 
 For more details visit the docs for installation: https://django-windowsauth.readthedocs.io/en/latest/installation/installation.html
 
