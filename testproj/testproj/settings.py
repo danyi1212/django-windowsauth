@@ -56,7 +56,7 @@ INSTALLED_APPS = [
 ]
 
 MIDDLEWARE = [
-    'demo.middleware.FakeRemoteUserMiddleware',
+    'windows_auth.middleware.SimulateWindowsAuthMiddleware',
     'debug_toolbar.middleware.DebugToolbarMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
@@ -231,6 +231,7 @@ DEBUG_TOOLBAR_PANELS = [
 WAUTH_RESYNC_DELTA = True
 # WAUTH_REQUIRE_RESYNC = False
 # WAUTH_USE_CACHE = True
+WAUTH_SIMULATE_USER = "EXAMPLE\\Administrator"
 
 WAUTH_DOMAINS = {
     "EXAMPLE": LDAPSettings(
