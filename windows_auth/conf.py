@@ -30,3 +30,5 @@ WAUTH_LOWERCASE_USERNAME: bool = getattr(settings, "WAUTH_LOWERCASE_USERNAME", T
 WAUTH_IGNORE_SETTING_WARNINGS: bool = getattr(settings, "WAUTH_IGNORE_SETTING_WARNINGS", False)
 # List of domains to preload and connect during process startup
 WAUTH_PRELOAD_DOMAINS: Optional[Iterable[str]] = getattr(settings, "WAUTH_PRELOAD_DOMAINS", None)
+# User to impersonate when using SimulateWindowsAuthMiddleware
+WAUTH_SIMULATE_USER: str = getattr(settings, "WAUTH_SIMULATE_USER", "")
