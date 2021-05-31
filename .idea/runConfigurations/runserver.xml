@@ -18,6 +18,8 @@
     <option name="MODULE_MODE" value="false" />
     <option name="REDIRECT_INPUT" value="false" />
     <option name="INPUT_FILE" value="" />
-    <method v="2" />
+    <method v="2">
+      <option name="LaunchBrowser.Before.Run" url="localhost:8000" />
+    </method>
   </configuration>
 </component>

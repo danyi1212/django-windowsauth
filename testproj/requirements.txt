@@ -1,11 +1,19 @@
+alabaster==0.7.12
 asgiref==3.3.4
+Babel==2.9.1
+bleach==3.3.0
+certifi==2021.5.30
+chardet==4.0.0
+colorama==0.4.4
 Django==3.2.3
 django-appconf==1.0.4
 django-debug-toolbar==3.2.1
--e git+https://github.com/danyi1212/django-windowsauth.git@4016cdd181e42ae85e19176eb1f364cd91ad2316#egg=django_windowsauth
-ldap3==2.9
-pyasn1==0.4.8
-pyasn1-modules==0.2.8
-pytz==2020.4
+-e ..
 sqlparse==0.4.1
+tornado==6.1
+tqdm==4.61.0
+twine==3.4.1
+urllib3==1.26.5
+webencodings==0.5.1
 wfastcgi==3.0.0
+zipp==3.4.1
