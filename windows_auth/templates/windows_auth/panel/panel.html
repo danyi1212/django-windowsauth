@@ -90,10 +90,10 @@
             </thead>
             <tbody>
             {% for operation in info.operations|slice:"::-1" %}
-                <tr class="{% if not operation.result.result %}djDebugRowWarning{% endif %}" id="ldapOperation_{{ forloop.counter }}">
+                <tr class="{% if not operation.result.result %}djDebugRowWarning{% endif %}" id="ldapOperation_{{ domain }}_{{ forloop.counter }}">
                     <td><span class="djdt-color" style="background-color:{% if operation.result.result %}red{% else %}green{% endif %}"></span></td>
                     <td class="djdt-toggle">
-                        <button type="button" class="djToggleSwitch" data-toggle-name="ldapOperation" data-toggle-id="{{ forloop.counter }}">+</button>
+                        <button type="button" class="djToggleSwitch" data-toggle-name="ldapOperation" data-toggle-id="{{ domain }}_{{ forloop.counter }}">+</button>
                     </td>
                     <td title="{{ operation.type_label }}">{{ operation.type_icon }}</td>
                     <td>{{ operation.title }}</td>
@@ -101,7 +101,7 @@
                     <td title="{{ operation.result.description | title }}">{{ operation.status_icon }}</td>
                     <td>{{ operation.entry_count }}</td>
                 </tr>
-                <tr class="djUnselected djToggleDetails_{{ forloop.counter }}" id="ldapOperationDetails_{{ forloop.counter }}">
+                <tr class="djUnselected djToggleDetails_{{ domain }}_{{ forloop.counter }}" id="ldapOperationDetails_{{ domain }}_{{ forloop.counter }}">
                     <td colspan="2"></td>
                     <td colspan="4">
                         <div class="djSQLDetailsDiv">
