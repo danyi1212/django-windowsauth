@@ -107,6 +107,13 @@ class LDAPManager:
             attributes=attributes
         )
 
+    @property
+    def bound(self) -> bool:
+        return self._conn.bound
+
+    def __bool__(self):
+        return self.bound
+
 
 _ldap_connections: Dict[str, LDAPManager] = {}
 
@@ -131,6 +138,6 @@ def close_connections(domains: List[str] = None):
     :return: None.
     """
     for domain, manager in _ldap_connections.items():
-        if not domains or domain in domains:
-            logger.debug(f"CLosing LDAP Connection to {domain}")
+        if not domains or domain in domains and manager.bound:
+            logger.debug(f"Closing LDAP Connection to {domain}")
             manager.close()
