@@ -10,6 +10,7 @@ from windows_auth import logger
 
 class WindowsAuthConfig(AppConfig):
     name = 'windows_auth'
+    default_auto_field = 'django.db.models.AutoField'
 
     def ready(self):
         from windows_auth.conf import WAUTH_IGNORE_SETTING_WARNINGS, WAUTH_PRELOAD_DOMAINS, WAUTH_DOMAINS
