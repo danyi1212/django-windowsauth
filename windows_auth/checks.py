@@ -16,6 +16,7 @@ from windows_auth.settings import DEFAULT_DOMAIN_SETTING
 def check_widows_auth_settings(app_configs, **kwargs):
     messages: List[CheckMessage] = []
 
+    # Require WAUTH_DOMAINS
     if not hasattr(settings, "WAUTH_DOMAINS"):
         messages.append(
             Error(
@@ -25,7 +26,19 @@ def check_widows_auth_settings(app_configs, **kwargs):
             )
         )
 
+    # Require WAUTH_SIMULATE_USER
+    if 'windows_auth.middleware.SimulateWindowsAuthMiddleware' in settings.MIDDLEWARE \
+            and not hasattr(settings, "WAUTH_SIMULATE_USER"):
+        messages.append(
+            Error(
+                "You have \'windows_auth.middleware.SimulateWindowsAuthMiddleware\' in your MIDDLEWARE, "
+                "but you have not configured WAUTH_SIMULATE_USER.",
+                id="wauth.E006",
+            )
+        )
+
     # TODO deprecate WAUTH_IGNORE_SETTING_WARNINGS
+    # Search missing domains
     if not WAUTH_IGNORE_SETTING_WARNINGS and DEFAULT_DOMAIN_SETTING not in WAUTH_DOMAINS:
         try:
             from windows_auth.models import LDAPUser
@@ -69,7 +82,7 @@ def check_ldap_domains(app_configs, **kwargs):
             if not manager.connection.bound:
                 messages.append(
                     Warning(
-                        f"Unable to created LDAP connection with domain {domain}",
+                        f"Unable to create LDAP connection with domain {domain}.",
                         obj=domain,
                         id="wauth.W004",
                     ),
@@ -82,5 +95,21 @@ def check_ldap_domains(app_configs, **kwargs):
                     id="wauth.E005",
                 ),
             )
+
+    return messages
+
+
+@register(deploy=True)
+def check_simulate_wauth(app_configs, **kwargs):
+    messages: List[CheckMessage] = []
+
+    if 'windows_auth.middleware.SimulateWindowsAuthMiddleware' in settings.MIDDLEWARE:
+        messages.append(
+            Warning(
+                "You should not have \'windows_auth.middleware.SimulateWindowsAuthMiddleware\' "
+                "in your middleware in production.",
+                id="wauth.W010"
+            )
+        )
 
     return messages
