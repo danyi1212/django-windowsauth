@@ -148,3 +148,13 @@ To enable LDAP Connection **lazy loading**, you can set this setting to ``False`
 
     You should **not be warned** by this behavior as this is behaves like a **quick connection test** to your LDAP server, and this is should only happened during **development phase**.
     In case you would like to **avoid this behavior** anyway, you can use the ``runserver --noreload`` parameter, or modifying the ``WAUTH_PRELOAD_DOMAINS`` setting to ``False`` when debugging.
+
+
+WAUTH_SIMULATE_USER
+~~~~~~~~~~~~~~~~~~~
+
+| Type ``str``; Default to ``""``; Not Required.
+| Impersonated user used by ``SimulateWindowsAuthMiddleware``
+
+Username described in Credential Manager API Down-Level scheme, or SPN when ``WAUTH_SPN=True``
+(e.g. ``EXAMPLE\username`` / ``username@example.com``).
