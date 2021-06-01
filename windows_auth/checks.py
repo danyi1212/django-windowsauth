@@ -37,8 +37,14 @@ def check_widows_auth_settings(app_configs, **kwargs):
             )
         )
 
+    return messages
+
+
+@register()
+def check_missing_domains(app_configs, **kwargs):
+    messages: List[CheckMessage] = []
+
     # TODO deprecate WAUTH_IGNORE_SETTING_WARNINGS
-    # Search missing domains
     if not WAUTH_IGNORE_SETTING_WARNINGS and DEFAULT_DOMAIN_SETTING not in WAUTH_DOMAINS:
         try:
             from windows_auth.models import LDAPUser
