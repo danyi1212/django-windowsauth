@@ -1,9 +1,11 @@
+from django.conf import settings
 from django.core.cache import cache
-from django.http import HttpResponse
+from django.http import HttpResponse, HttpRequest
 from django.utils import timezone
 
 from windows_auth import logger
-from windows_auth.conf import WAUTH_RESYNC_DELTA, WAUTH_USE_CACHE, WAUTH_REQUIRE_RESYNC, WAUTH_ERROR_RESPONSE
+from windows_auth.conf import WAUTH_RESYNC_DELTA, WAUTH_USE_CACHE, WAUTH_REQUIRE_RESYNC, WAUTH_ERROR_RESPONSE, \
+    WAUTH_SIMULATE_USER
 from windows_auth.models import LDAPUser
 
 
@@ -57,3 +59,16 @@ class UserSyncMiddleware:
                         raise e
         response = self.get_response(request)
         return response
+
+
+class SimulateWindowsAuthMiddleware:
+
+    def __init__(self, get_response):
+        self.get_response = get_response
+
+    def __call__(self, request: HttpRequest):
+        if settings.DEBUG and not request.META.get("REMOTE_USER"):
+            # Set remote user
+            request.META['REMOTE_USER'] = WAUTH_SIMULATE_USER
+        return self.get_response(request)
+

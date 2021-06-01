@@ -46,6 +46,7 @@ Features
 
    reference/settings_reference
    reference/ldap_settings
+   reference/middleware
    reference/decorators
    reference/signals
    reference/models
