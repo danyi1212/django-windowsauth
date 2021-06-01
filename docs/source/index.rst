@@ -51,4 +51,5 @@ Features
    reference/signals
    reference/models
    reference/management_commands
+   reference/checks
    reference/change_log

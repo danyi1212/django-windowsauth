@@ -5,6 +5,8 @@ Deployment Checklist
 Before deploying your site to production it is important to go over some best practices and make sure your site is the **most stable and secure**.
 Provided here are some best practices related to ``django-windowsauth``, IIS and LDAP.
 
+Many checks can be performed automatically using ``py manage.py check --deploy``.
+
 .. seealso::
     Check out `Django's deployment checklist <https://docs.djangoproject.com/en/3.1/howto/deployment/checklist/>`_ too.
 

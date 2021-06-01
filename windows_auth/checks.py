@@ -177,8 +177,8 @@ def check_deployment_settings(app_configs, **kwargs):
         if LDAPUser.objects.filter(user__username=username, domain=user_domain).exists():
             messages.append(
                 Warning(
-                    "You should use a dedicated bind account with the minimum permissions needed",
-                    hint="Your bind account has logged in to website",
+                    "You should use a dedicated bind account with the minimum permissions needed.",
+                    hint="Your bind account has logged in to website.",
                     obj=domain,
                     id="wauth.W014",
                 )
@@ -189,7 +189,7 @@ def check_deployment_settings(app_configs, **kwargs):
             messages.append(
                 Warning(
                     "You should use a dedicated connection for you write operations. "
-                    "Using a different connection, and even another bind account, is considered best-practice",
+                    "Using a different connection, and even another bind account, is considered best-practice.",
                     obj=domain,
                     id="wauth.W015",
                 )
