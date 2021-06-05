@@ -36,6 +36,7 @@ jobs:
         python -m pip install -U pip
         
     - name: Install Dependencies
+      working-directory: ./testproj
       run: |
         pip install -r requirements.txt
     
@@ -45,11 +46,13 @@ jobs:
         python -m pip install "Django~=${{ matrix.django-version }}.0"
     
     - name: Python and Django versions
+      
       run: |
         echo "Python ${{ matrix.python-version }} -> Django ${{ matrix.django-version }}"
         python --version
         echo "Django: `django-admin --version`"
         
     - name: Run Tests
+      working-directory: ./testproj
       run: |
         python manage.py test
