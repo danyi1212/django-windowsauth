@@ -42,7 +42,7 @@ jobs:
     
     - name: Upgrade django version
       run: |
-        python -m pip uninstall django
+        python -m pip uninstall -y django
         python -m pip install "Django~=${{ matrix.django-version }}.0"
     
     - name: Python and Django versions
