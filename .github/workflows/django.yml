@@ -1,0 +1,55 @@
+name: Django Testing CI
+
+on: [push, pull_request]
+
+jobs:
+  test:
+
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+         python-version:
+          - "3.6"
+          - "3.7"
+          - "3.8"
+          - "3.9"
+          - "3.10-dev"
+         django-version:
+          - "2.2"  # LTS
+          - "3.1"
+          - "3.2"  # LTS
+         exclude:
+            # Python 3.10 is compatible with Django 3.1+
+            - python-version: "3.10-dev"
+              django-version: "2.2"
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: Set up Python ${{ matrix.python-version }}
+      uses: actions/setup-python@v2
+      with:
+        python-version: ${{ matrix.python-version }}
+        
+    - name: Upgrade pip version
+      run: |
+        python -m pip install -U pip
+        
+    - name: Install Dependencies
+      run: |
+        pip install -r requirements.txt
+    
+    - name: Upgrade django version
+      run: |
+        python -m pip uninstall django
+        python -m pip install "Django~=${{ matrix.django-version }}.0"
+    
+    - name: Python and Django versions
+      run: |
+        echo "Python ${{ matrix.python-version }} -> Django ${{ matrix.django-version }}"
+        python --version
+        echo "Django: `django-admin --version`"
+        
+    - name: Run Tests
+      run: |
+        python manage.py test
