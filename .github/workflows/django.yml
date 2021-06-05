@@ -55,4 +55,5 @@ jobs:
     - name: Run Tests
       working-directory: ./testproj
       run: |
+        mkdir logs
         python manage.py test
