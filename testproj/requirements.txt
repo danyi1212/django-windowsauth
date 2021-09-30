@@ -9,7 +9,7 @@ Django==3.2.5
 django-appconf==1.0.4
 django-debug-toolbar==3.2.1
 -e ..
-sqlparse==0.4.1
+sqlparse==0.4.2
 tornado==6.1
 tqdm==4.61.0
 twine==3.4.1
