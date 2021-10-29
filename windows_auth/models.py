@@ -106,10 +106,14 @@ class LDAPUser(models.Model):
         """
         # re-query when no cache available or is missing a requested attribute
         manager = self.get_ldap_manager()
+        username_ldap_field = manager.settings.USER_FIELD_MAP[manager.settings.USER_QUERY_FIELD]
+        ldap_filter = {
+            **manager.settings.USER_QUERY_FILTER,
+            username_ldap_field: getattr(self.user, manager.settings.USER_QUERY_FIELD)
+        }
         user_reader = manager.get_reader(
             "user",
-            f"objectCategory: person, {manager.settings.USER_FIELD_MAP[manager.settings.USER_QUERY_FIELD]}: "
-            f"{getattr(self.user, manager.settings.USER_QUERY_FIELD)}",
+            ", ".join(f"{key}: {value}" for key, value in ldap_filter.items()),
             attributes=attributes or manager.settings.USER_FIELD_MAP.values(),
         )
         with LogExecutionTime(f"Query LDAP User {self}"):
