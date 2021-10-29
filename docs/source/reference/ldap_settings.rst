@@ -320,6 +320,17 @@ This is mentioned in the tutorial :doc:`../howto/custom_user_fields`.
     Make sure to use a unique field, that is unique at the **LDAP side** too.
     If multiple objects are found, the synchronization will fail.
 
+USER_QUERY_FILTER
+~~~~~~~~~~~~~~~~~
+
+| Type ``dict``; Default to ``{"objectCategory": "person"}``; Not Required.
+| Filters used when searching for a user from LDAP
+
+LDAP filters applied when querying LDAP for a matching user.
+The dictionary is translated to ldap3's (Simplified Query Language)[https://ldap3.readthedocs.io/en/latest/abstraction.html#simplified-query-language],
+then parsed to an ordinary LDAP filter. All special operators implemented by ldap3 are available both keys and values
+(e.g. {"&Age": "> 21; < 65"}).
+
 GROUP_ATTRS
 ~~~~~~~~~~~
 

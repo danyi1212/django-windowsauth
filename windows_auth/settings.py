@@ -16,12 +16,12 @@ def _get_group_list(value) -> List[str]:
         return value
 
 
-@dataclass()
+@dataclass(frozen=True)
 class LDAPSettings:
     # connection settings
     SERVER: str
     USERNAME: str
-    PASSWORD: str
+    PASSWORD: str = field(repr=False)
     SEARCH_BASE: str
 
     USE_SSL: bool = True
@@ -42,6 +42,9 @@ class LDAPSettings:
         "email": "mail",
     })
     USER_QUERY_FIELD: str = "username"
+    USER_QUERY_FILTER: Dict[str, str] = field(default_factory=lambda: {
+        "objectCategory": "person",
+    })
 
     # groups / permissions sync settings
     GROUP_ATTRS: Union[str, Iterable[str]] = "cn"
@@ -77,7 +80,7 @@ class LDAPSettings:
             if setting.name not in merged_settings:
                 raise ImproperlyConfigured(f"Domain {domain} settings is missing a required setting: {setting.name}")
 
-        cls_fields = set(f.name for f in fields(cls))
+        cls_fields = {f.name for f in fields(cls)}
         return cls(**{
            setting: value(domain) if callable(value) else value
            for setting, value in merged_settings.items()
@@ -109,4 +112,3 @@ class LDAPSettings:
                 for k, v in self.FLAG_MAP.items()
             }
         }
-

@@ -1,3 +1,4 @@
+from functools import lru_cache
 from typing import Union, Iterable, Optional, Dict
 
 from django.contrib.auth import get_user_model
@@ -23,13 +24,12 @@ def _match_groups(reader: Reader, groups: Optional[Union[Iterable[str], str]], a
     :param default: Default value when no group is provided.
     :return: Boolean if exist
     """
-    if groups:
-        if isinstance(groups, str):
-            return bool(reader.match(attributes, groups))
-        else:
-            return bool(any(reader.match(attributes, group) for group in groups))
-    else:
+    if not groups:
         return default
+    elif isinstance(groups, str):
+        return bool(reader.match(attributes, groups))
+    else:
+        return bool(any(reader.match(attributes, group) for group in groups))
 
 
 class LDAPUserManager(models.Manager):
@@ -41,10 +41,14 @@ class LDAPUserManager(models.Manager):
         :return: User object (not LDAPUser)
         """
         if WAUTH_USE_SPN:
-            assert "@" in username, "Username must be in username@domain.com format."
+            if "@" not in username:
+                raise ValueError("Username must be in username@domain.com format.")
+
             sam_account_name, domain = username.split("@", 2)
         else:
-            assert "\\" in username, "Username must be in DOMAIN\\username format."
+            if "\\" not in username:
+                raise ValueError("Username must be in DOMAIN\\username format.")
+
             domain, sam_account_name = username.split("\\", 2)
 
         if WAUTH_LOWERCASE_USERNAME:
@@ -71,21 +75,21 @@ class LDAPUser(models.Model):
     def get_ldap_manager(self) -> LDAPManager:
         return get_ldap_manager(self.domain)
 
-    def get_ldap_attr(self, attribute: str, as_list: bool = False, refresh_cache: bool = False):
+    def get_ldap_attr(self, attribute: str, as_list: bool = False):
         """
         Get a specific attribute of the related LDAP User.
-        LDAP User entry is saved as cache in process memory to avoid unnecessary LDAP queries.
         :param attribute: The name of the LDAP attribute to get
         :param as_list: The attribute's value is a list
-        :param refresh_cache: Ignore cached entry, and overwrite value with new one
         :return: Value of attribute from the related LDAP User
         """
-        if refresh_cache or not self._ldap_user_cache or attribute not in self._ldap_user_cache:
-            ldap_user = self.get_ldap_user(attributes=(attribute,))
-            if attribute not in ldap_user:
-                raise AttributeError(f"User {self.user} does not have LDAP Attribute {attribute}")
-        else:
-            ldap_user = self._ldap_user_cache
+        ldap_user = self.get_ldap_user()
+
+        # check if is already in default cached entry
+        if attribute not in ldap_user:
+            ldap_user = self.get_ldap_user(attributes=[attribute])
+
+        if attribute not in ldap_user:
+            raise AttributeError(f"User {self.user} does not have LDAP Attribute {attribute}")
 
         attribute_obj: Attribute = getattr(ldap_user, attribute)
         if as_list:
@@ -93,27 +97,27 @@ class LDAPUser(models.Model):
         else:
             return attribute_obj.value
 
-    def get_ldap_user(self, attributes: Optional[Iterable[str]] = None, refresh_cache: bool = False) -> Entry:
+    @lru_cache()
+    def get_ldap_user(self, attributes: Optional[Iterable[str]] = None) -> Entry:
         """
         Query LDAP for related user entry.
-        LDAP User entry is saved as cache in process memory to avoid unnecessary LDAP queries.
         :param attributes: List of attributes to get
-        :param refresh_cache: Ignore cached entry, and overwrite value with new one
         :return: ldap3 Entry of the related LDAP User
         """
         # re-query when no cache available or is missing a requested attribute
-        if refresh_cache or not self._ldap_user_cache or all(attr not in self._ldap_user_cache for attr in attributes):
-            manager = self.get_ldap_manager()
-            user_reader = manager.get_reader(
-                "user",
-                f"objectCategory: person, {manager.settings.USER_FIELD_MAP[manager.settings.USER_QUERY_FIELD]}: "
-                f"{getattr(self.user, manager.settings.USER_QUERY_FIELD)}",
-                attributes=attributes or manager.settings.USER_FIELD_MAP.values(),
-            )
-            with LogExecutionTime(f"Query LDAP User {self}"):
-                self._ldap_user_cache = user_reader.search()[0]
-
-        return self._ldap_user_cache
+        manager = self.get_ldap_manager()
+        username_ldap_field = manager.settings.USER_FIELD_MAP[manager.settings.USER_QUERY_FIELD]
+        ldap_filter = {
+            **manager.settings.USER_QUERY_FILTER,
+            username_ldap_field: getattr(self.user, manager.settings.USER_QUERY_FIELD)
+        }
+        user_reader = manager.get_reader(
+            "user",
+            ", ".join(f"{key}: {value}" for key, value in ldap_filter.items()),
+            attributes=attributes or manager.settings.USER_FIELD_MAP.values(),
+        )
+        with LogExecutionTime(f"Query LDAP User {self}"):
+            return user_reader.search()[0]
 
     def get_ldap_groups(self, attributes: Optional[Iterable[str]] = None, preload: bool = True) -> Reader:
         """
