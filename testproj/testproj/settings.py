@@ -235,11 +235,11 @@ WAUTH_SIMULATE_USER = "EXAMPLE\\Administrator"
 
 WAUTH_DOMAINS = {
     "EXAMPLE": LDAPSettings(
-        SERVER="127.0.0.1",
+        SERVER="ldaps://127.0.0.1:636",
         SEARCH_BASE="DC=example,DC=org",
         USERNAME="cn=admin,dc=example,dc=org",
         PASSWORD="Adm1n!",
-        USE_SSL=False,
+        USE_SSL=True,
         COLLECT_METRICS=True,
         READ_ONLY=False,
         GROUP_MAP={
