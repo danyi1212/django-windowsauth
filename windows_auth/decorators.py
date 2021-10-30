@@ -1,7 +1,7 @@
 from django.contrib.auth.decorators import user_passes_test
 from django.utils import timezone
 
-from windows_auth.conf import WAUTH_USE_CACHE
+from windows_auth.conf import wauth_settings
 from windows_auth.models import LDAPUser
 
 
@@ -50,7 +50,7 @@ def ldap_sync_required(function=None, timedelta=None, login_url=None, allow_non_
     def check_sync(user):
         if user.is_authenticated and LDAPUser.objects.filter(user=user).exists():
             try:
-                if WAUTH_USE_CACHE:
+                if wauth_settings.WAUTH_USE_CACHE:
                     user.ldap.sync()
                 else:
                     # check via database query
