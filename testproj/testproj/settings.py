@@ -235,19 +235,20 @@ WAUTH_SIMULATE_USER = "EXAMPLE\\Administrator"
 
 WAUTH_DOMAINS = {
     "EXAMPLE": LDAPSettings(
-        SERVER="example.local",
-        SEARCH_BASE="DC=example,DC=local",
-        USERNAME="EXAMPLE\\django_sync",
-        PASSWORD="Aa123456!",
-        USE_SSL=True,
+        SERVER="127.0.0.1",
+        SEARCH_BASE="DC=example,DC=org",
+        USERNAME="cn=admin,dc=example,dc=org",
+        PASSWORD="Adm1n!",
+        USE_SSL=False,
         COLLECT_METRICS=True,
         READ_ONLY=False,
         GROUP_MAP={
             "demo": "Domain Admins",
             "demo2": "Domain Admins",
         },
-        CONNECTION_OPTIONS={
-            "authentication": ldap3.NTLM,
-        },
+        USER_QUERY_FILTER={},
+        # CONNECTION_OPTIONS={
+        #     "authentication": ldap3.NTLM,
+        # },
     )
 }
