@@ -1,6 +1,6 @@
 from django.contrib.auth.backends import RemoteUserBackend
 
-from windows_auth.conf import WAUTH_USE_SPN, WAUTH_LOWERCASE_USERNAME
+from windows_auth.conf import wauth_settings
 from windows_auth.models import LDAPUser
 
 
@@ -19,12 +19,12 @@ class WindowsAuthBackend(RemoteUserBackend):
         :param username: raw REMOTE_USER header value
         :return: cleaned sAMAccountName value from the
         """
-        if WAUTH_USE_SPN:
+        if wauth_settings.WAUTH_USE_SPN:
             sam_account_name, self.domain = username.rsplit("@", 2)
         else:
             self.domain, sam_account_name = username.split("\\", 2)
 
-        if WAUTH_LOWERCASE_USERNAME:
+        if wauth_settings.WAUTH_LOWERCASE_USERNAME:
             return str(sam_account_name).lower()
         else:
             return sam_account_name
