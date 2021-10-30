@@ -9,7 +9,7 @@ on: [ push, pull_request ]
 
 env:
   REGISTRY: ghcr.io
-  IMAGE_NAME: ${{ github.repository }}/testproj/ldap_server
+  IMAGE_NAME: ${{ github.repository }}
 
 jobs:
   build-and-push-image:
