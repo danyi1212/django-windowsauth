@@ -9,7 +9,7 @@ from django.utils import timezone
 from ldap3 import Reader, Entry, Attribute
 
 from windows_auth import logger
-from windows_auth.conf import WAUTH_USE_CACHE, WAUTH_USE_SPN, WAUTH_LOWERCASE_USERNAME
+from windows_auth.conf import wauth_settings
 from windows_auth.ldap import LDAPManager, get_ldap_manager
 from windows_auth.signals import ldap_user_sync
 from windows_auth.utils import LogExecutionTime
@@ -40,7 +40,7 @@ class LDAPUserManager(models.Manager):
         :param username: Logon username (DOMAIN\username or username@domain.com)
         :return: User object (not LDAPUser)
         """
-        if WAUTH_USE_SPN:
+        if wauth_settings.WAUTH_USE_SPN:
             if "@" not in username:
                 raise ValueError("Username must be in username@domain.com format.")
 
@@ -51,7 +51,7 @@ class LDAPUserManager(models.Manager):
 
             domain, sam_account_name = username.split("\\", 2)
 
-        if WAUTH_LOWERCASE_USERNAME:
+        if wauth_settings.WAUTH_LOWERCASE_USERNAME:
             sam_account_name = sam_account_name.lower()
 
         user = get_user_model().objects.create_user(username=sam_account_name)
@@ -210,13 +210,13 @@ class LDAPUser(models.Model):
         ldap_user_sync.send(self, ldap_user=ldap_user, group_reader=group_reader)
 
         # update sync time
-        if not WAUTH_USE_CACHE:
+        if not wauth_settings.WAUTH_USE_CACHE:
             with LogExecutionTime(f"Save LDAP User {self}"):
                 self.last_sync = timezone.now()
                 self.save()
 
     def __str__(self):
-        if WAUTH_USE_SPN:
+        if wauth_settings.WAUTH_USE_SPN:
             return f"{self.user.username}@{self.domain}"
         else:
             return f"{self.domain}\\{self.user.username}"
