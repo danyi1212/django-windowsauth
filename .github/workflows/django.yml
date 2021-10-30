@@ -9,7 +9,7 @@ jobs:
 
     services:
       ldap:
-        image: danyi1212/ldap-server-wauth-tests:latest
+        image: ghcr.io/danyi1212/django-windowsauth:latest
         ports:
           - 389:389 
           - 636:636
