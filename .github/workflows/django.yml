@@ -11,7 +11,8 @@ jobs:
       ldap:
         image: danyi1212/ldap-server-wauth-tests:latest
         ports:
-          - 389:389 636:636
+          - 389:389 
+          - 636:636
 
     strategy:
       fail-fast: false
