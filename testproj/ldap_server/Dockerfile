@@ -4,4 +4,4 @@ LABEL maintainer="Dan Yishai <danyi1212@gmail.com>"
 ADD bootstrap /container/service/slapd/assets/config/bootstrap
 ADD environment /container/environment/01-custom
 
-HEALTHCHECK CMD ldapsearch -D 'cn=admin,dc=example,dc=org' -w Adm1n! -b "dc=example,dc=org"
+HEALTHCHECK --start-period=30s CMD ldapsearch -D 'cn=admin,dc=example,dc=org' -w Adm1n! -b "dc=example,dc=org"
