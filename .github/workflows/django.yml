@@ -10,8 +10,13 @@ jobs:
     services:
       ldap:
         image: ghcr.io/danyi1212/django-windowsauth:pr-6
+        options: >-
+          --health-cmd "nc localhost 636"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
         ports:
-          - 389:389 
+          - 389:389
           - 636:636
 
     strategy:
