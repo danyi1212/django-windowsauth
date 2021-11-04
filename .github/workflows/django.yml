@@ -11,7 +11,7 @@ jobs:
       ldap:
         image: ghcr.io/danyi1212/django-windowsauth:pr-6
         options: >-
-          --health-cmd "ldapsearch -D 'cn=admin,dc=example,dc=org' -w Adm1n! -b dc=example,dc=org"
+          --health-cmd "ldapsearch -D 'cn=admin,dc=example,dc=org' -w Adm1n! -b dc=example,dc=org || exit 1"
           --health-start-period 30s
           --health-interval 10s
           --health-retries 30
