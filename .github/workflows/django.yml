@@ -10,6 +10,12 @@ jobs:
     services:
       ldap:
         image: ghcr.io/danyi1212/django-windowsauth:pr-6
+        options: >-
+          --health-cmd "ldapsearch -D 'cn=admin,dc=example,dc=org' -w Adm1n! -b dc=example,dc=org"
+          --health-interval 10s
+          --health-timeout 10s
+          --health-retries 6
+          --health-start-period 30s
         ports:
           - 389:389
           - 636:636
