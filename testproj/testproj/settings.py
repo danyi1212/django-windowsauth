@@ -235,7 +235,7 @@ WAUTH_SIMULATE_USER = "EXAMPLE\\Administrator"
 
 WAUTH_DOMAINS = {
     "EXAMPLE": LDAPSettings(
-        SERVER="ldaps://127.0.0.1:636",
+        SERVER="127.0.0.1",
         SEARCH_BASE="DC=example,DC=org",
         USERNAME="cn=admin,dc=example,dc=org",
         PASSWORD="Adm1n!",
