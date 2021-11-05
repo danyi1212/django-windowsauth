@@ -31,7 +31,7 @@ jobs:
         exclude:
           # Python 3.9 is compatible with django 3.0+
           - python-version: "3.9"
-            django version: "2.2"
+            django-version: "2.2"
           # Python 3.10 is compatible with Django 3.2+
           - python-version: "3.10"
             django-version: "2.2"
@@ -41,7 +41,7 @@ jobs:
             django-version: "3.1"
           # Django 4 is compatible with Python 3.8+
           - python-version: "3.7"
-            django-vesion: "4.0"
+            django-version: "4.0"
 
     steps:
       - uses: actions/checkout@v2
