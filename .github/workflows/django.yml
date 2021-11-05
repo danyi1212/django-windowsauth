@@ -1,6 +1,6 @@
 name: Django Testing CI
 
-on: [ push, pull_request ]
+on: [ pull_request ]
 
 jobs:
   test:
@@ -9,7 +9,7 @@ jobs:
 
     services:
       ldap:
-        image: ghcr.io/danyi1212/django-windowsauth:pr-6
+        image: ghcr.io/danyi1212/django-windowsauth:automated-testings
         ports:
           - 389:389
           - 636:636
