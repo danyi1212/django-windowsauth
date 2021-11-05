@@ -5,7 +5,10 @@
 
 name: Build and Publish LDAP Server for Testing Docker image
 
-on: [ pull_request ]
+on:
+  push:
+    paths:
+      - testproj/ldap_server/**
 
 env:
   REGISTRY: ghcr.io
