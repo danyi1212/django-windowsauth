@@ -10,7 +10,6 @@ jobs:
     services:
       ldap:
         image: ghcr.io/danyi1212/django-windowsauth:pr-6
-        options: --health-cmd "sleep 10 && ldapsearch -D 'cn=admin,dc=example,dc=org' -w Adm1n! -b dc=example,dc=org || exit 1" --health-start-period 30s --health-interval 15s --health-retries 30
         ports:
           - 389:389
           - 636:636
