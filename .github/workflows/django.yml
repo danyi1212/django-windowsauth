@@ -10,6 +10,7 @@ jobs:
     services:
       ldap:
         image: ghcr.io/danyi1212/django-windowsauth:automated-testings
+        options: --health-start-period 30s --health-interval 15s --health-retries 30
         ports:
           - 389:389
           - 636:636
