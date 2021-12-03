@@ -121,7 +121,7 @@ jobs:
           pip install pylint pylint-django django djangorestframework -r requirements-github.txt
       - name: Analysing drf_messages with pylint
         run: |
-          pylint drf_messages --load-plugins pylint_django --load-plugins pylint_django.checkers.migrations
+          pylint windows_auth --load-plugins pylint_django --load-plugins pylint_django.checkers.migrations
       - name: Analysing test project with pylint
         run: |
           pylint testproj/* --load-plugins pylint_django --load-plugins pylint_django.checkers.migrations --django-settings-module=testproj.settings
