@@ -1,7 +1,10 @@
 name: Django Testing CI
 
-on: [ pull_request ]
-
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main, release-* ]
 env:
   REGISTRY: ghcr.io
   IMAGE_NAME: ${{ github.repository }}
