@@ -47,19 +47,14 @@ jobs:
     needs: build-ldap-server
     services:
       openldap:
-        image: mwaeckerlin/openldap
+        image: osixia/openldap:1.5.0
         options: --name ldap-server
         ports:
           - 389:389
           - 636:636
         env:
-          DEBUG_LEVE: 1
-          DOMAIN: example.com
-          ORGANIZATION: example
-          PASSWORD: 123
-          INIT_SCRIPT: /var/init/init.ldif
-          CUSTOM_SCHEMAS: /var/schemas
-          SCHEMAS: cosine inetorgperson nis samba
+          LDAP_SEED_INTERNAL_LDIF_PATH: "${{ github.workspace }}/build/ldap_server/ldif"
+          LDAP_SEED_INTERNAL_SCHEMA_PATH: "${{ github.workspace }}/build/ldap_server/schema"
         volumes:
           - ${{ github.workspace }}/build/ldap_server/init.ldif:/var/init/init.ldif
           - ${{ github.workspace }}/build/ldap_server/schemas:/var/schemas
@@ -94,11 +89,11 @@ jobs:
         uses: actions/setup-python@v2
         with:
           python-version: ${{ matrix.python-version }}
-
-      - name: Restart LDAP Server (load data & schema)
-        uses: docker://docker
-        with:
-          args: docker restart ldap-server
+#
+#      - name: Restart LDAP Server (load data & schema)
+#        uses: docker://docker
+#        with:
+#          args: docker restart ldap-server
 
       - name: Upgrade pip version
         run: python -m pip install -U pip
