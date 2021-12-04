@@ -55,9 +55,6 @@ jobs:
         env:
           LDAP_SEED_INTERNAL_LDIF_PATH: "${{ github.workspace }}/build/ldap_server/ldif"
           LDAP_SEED_INTERNAL_SCHEMA_PATH: "${{ github.workspace }}/build/ldap_server/schema"
-        volumes:
-          - ${{ github.workspace }}/build/ldap_server/init.ldif:/var/init/init.ldif
-          - ${{ github.workspace }}/build/ldap_server/schemas:/var/schemas
 
     strategy:
       fail-fast: false
