@@ -1,0 +1,132 @@
+name: Django Testing CI
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main, release-* ]
+env:
+  REGISTRY: ghcr.io
+  IMAGE_NAME: ${{ github.repository }}
+
+jobs:
+  build-ldap-server:
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: read
+      packages: write
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Log in to the Container registry
+        uses: docker/login-action@f054a8b539a109f9f41c372932f1ae047eff08c9
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Extract metadata (tags, labels) for Docker
+        id: meta
+        uses: docker/metadata-action@98669ae865ea3cffbcbaa878cf57c20bbf1c6c38
+        with:
+          images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
+
+      - name: Build and push Docker image
+        uses: docker/build-push-action@ad44023a93711e3deb337508980b4b5e9bcdc5dc
+        with:
+          context: testproj/ldap_server
+          push: true
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+
+  test:
+    runs-on: ubuntu-latest
+    needs: build-ldap-server
+    services:
+      ldap:
+        image: ghcr.io/danyi1212/django-windowsauth:${{ github.head_ref }}
+        ports:
+          - 389:389
+          - 636:636
+        options: --name ldap-server
+
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version:
+          - "3.7"
+          - "3.8"
+          - "3.9"
+          - "3.10"
+        django-version:
+          - "2.2"  # LTS
+          - "3.0"
+          - "3.1"
+          - "3.2"  # LTS
+          # - "4.0"
+        exclude:
+          # Python 3.9 is compatible with django 3.0+
+          - { python-version: "3.9", django-version: "2.2" }
+          # Python 3.10 is compatible with Django 3.2+
+          - { python-version: "3.10", django-version: "2.2" }
+          - { python-version: "3.10", django-version: "3.0" }
+          - { python-version: "3.10", django-version: "3.1" }
+          # Django 4 is compatible with Python 3.8+
+          # - { python-version: "3.7", django-version: "4.0" }
+
+    steps:
+      - uses: actions/checkout@v2
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v2
+        with:
+          python-version: ${{ matrix.python-version }}
+
+      - name: Ping LDAP Server
+        uses: docker://docker
+        with:
+          args: docker exec ldap-server ldapsearch -D 'cn=admin,dc=example,dc=org' -w Adm1n! -b 'dc=example,dc=org'
+
+      - name: Upgrade pip version
+        run: python -m pip install -U pip
+
+      - name: Install Dependencies
+        working-directory: ./testproj
+        run: pip install -r requirements-github.txt
+
+      - name: Install django ${{ matrix.django-version }}
+        run: python -m pip install "Django~=${{ matrix.django-version }}"
+
+      - name: Python and Django versions
+        run: |
+          echo "Python ${{ matrix.python-version }} -> Django ${{ matrix.django-version }}"
+          python --version
+          echo "Django: `django-admin --version`"
+
+      - name: Create logs directory
+        working-directory: ./testproj
+        run: mkdir logs
+
+      - name: Run Tests
+        working-directory: ./testproj
+        run: python manage.py test
+
+  pylint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v2
+      - name: Install dependencies
+        working-directory: ./testproj
+        run: |
+          python -m pip install --upgrade pip
+          pip install pylint pylint-django django djangorestframework -r requirements-github.txt
+      - name: Analysing drf_messages with pylint
+        run: |
+          pylint windows_auth --load-plugins pylint_django --load-plugins pylint_django.checkers.migrations
+      - name: Analysing test project with pylint
+        run: |
+          pylint testproj/* --load-plugins pylint_django --load-plugins pylint_django.checkers.migrations --django-settings-module=testproj.settings
