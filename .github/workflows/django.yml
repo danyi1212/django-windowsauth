@@ -48,7 +48,12 @@ jobs:
     services:
       openldap:
         image: osixia/openldap:1.5.0
-        options: --name ldap-server
+        options: >-
+          --name ldap-server
+          --health-cmd "ldapsearch -D 'cn=admin,dc=example,dc=org' -w admin -b dc=example,dc=org || exit 1"
+          --health-start-period 30s
+          --health-interval 15s
+          --health-retries 30
         ports:
           - 389:389
           - 636:636
