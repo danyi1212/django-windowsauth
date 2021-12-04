@@ -238,8 +238,8 @@ WAUTH_DOMAINS = {
         SERVER="127.0.0.1",
         SEARCH_BASE="DC=example,DC=org",
         USERNAME="cn=admin,dc=example,dc=org",
-        PASSWORD="Adm1n!",
-        USE_SSL=True,
+        PASSWORD="admin",
+        USE_SSL=False,
         COLLECT_METRICS=True,
         READ_ONLY=False,
         GROUP_MAP={
