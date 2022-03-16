@@ -31,11 +31,10 @@ class LogExecutionTime:
         self.context = context
 
     def _get_message(self) -> str:
-        if callable(self.msg):
-            args, kwargs = self.context or ([], {})
-            return f"{self.msg(*args, **kwargs)}: {timezone.now() - self.start_time}"
-        else:
+        if not callable(self.msg):
             return f"{self.msg}: {timezone.now() - self.start_time}"
+        args, kwargs = self.context or ([], {})
+        return f"{self.msg(*args, **kwargs)}: {timezone.now() - self.start_time}"
 
     def __enter__(self):
         self.start_time = timezone.now()

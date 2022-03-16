@@ -66,13 +66,11 @@ class Command(BaseCommand):
                interval=None, random=None, timeout=None, priority=None, **options):
         try:
             if predefined:
-                # predefined tasks
-                if command in PREDEFINED_TASKS:
-                    create_task = PREDEFINED_TASKS[command]
-                    create_task(command=command, name=name, desc=desc, identity=identity, folder=folder,
-                                interval=interval, random=random, timeout=timeout, priority=priority)
-                else:
+                if command not in PREDEFINED_TASKS:
                     raise CommandError(f"Predefined task for \"{command}\" does not exist.")
+                create_task = PREDEFINED_TASKS[command]
+                create_task(command=command, name=name, desc=desc, identity=identity, folder=folder,
+                            interval=interval, random=random, timeout=timeout, priority=priority)
             else:
                 # create task definition
                 task_def = create_task_definition(command, description=desc, priority=priority, timeout=timeout)

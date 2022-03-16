@@ -119,10 +119,7 @@ class OperationInfo:
 
     @cached_property
     def status_icon(self) -> str:
-        if self.result.get("result") == 0:
-            return "✅"
-        else:
-            return "❌"
+        return "✅" if self.result.get("result") == 0 else "❌"
 
     @cached_property
     def scope_label(self) -> str:
@@ -204,10 +201,7 @@ def get_response_decorator(func, domain: str):
         ))
 
         # mimic the original logic about get_request
-        if get_request:
-            return response, result, request
-        else:
-            return response, result
+        return (response, result, request) if get_request else (response, result)
 
     wrapper.original = func
     return wrapper
