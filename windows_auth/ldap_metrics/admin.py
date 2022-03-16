@@ -62,13 +62,17 @@ class LDAPUsageAdmin(admin.ModelAdmin):
         return obj.elapsed_time
 
     def bytes(self, obj):
-        return format_bytes(obj.bytes_received) + " / " + format_bytes(obj.bytes_transmitted)
+        return f'{format_bytes(obj.bytes_received)} / ' + format_bytes(
+            obj.bytes_transmitted
+        )
 
     def messages(self, obj):
-        return str(obj.messages_received) + " / " + str(obj.messages_transmitted)
+        return f'{str(obj.messages_received)} / {str(obj.messages_transmitted)}'
 
     def sockets(self, obj):
-        return str(obj.open_sockets) + " / " + str(obj.closed_sockets) + " / " + str(obj.wrapped_sockets)
+        return f'{str(obj.open_sockets)} / {str(obj.closed_sockets)} / ' + str(
+            obj.wrapped_sockets
+        )
 
     def has_add_permission(self, request):
         return False

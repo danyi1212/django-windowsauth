@@ -40,25 +40,22 @@ class UserSyncMiddleware:
 
                         # create new cache key
                         cache.set(cache_key, True, timeout)
-                else:
-                    # check via database query
-                    if not ldap_user.last_sync or ldap_user.last_sync < timezone.now() - timezone.timedelta(seconds=timeout):
-                        ldap_user.sync()
+                elif not ldap_user.last_sync or ldap_user.last_sync < timezone.now() - timezone.timedelta(seconds=timeout):
+                    ldap_user.sync()
             except LDAPUser.DoesNotExist:
                 # user is getting created the first time
                 pass
             except Exception as e:
                 logger.exception(f"Failed to synchronize user {request.user} against LDAP")
-                # return error response
-                if WAUTH_REQUIRE_RESYNC:
-                    if isinstance(WAUTH_ERROR_RESPONSE, int):
-                        return HttpResponse(f"Authorization Failed.", status=WAUTH_ERROR_RESPONSE)
-                    elif callable(WAUTH_ERROR_RESPONSE):
+                if isinstance(WAUTH_ERROR_RESPONSE, int):
+                    if WAUTH_REQUIRE_RESYNC:
+                        return HttpResponse("Authorization Failed.", status=WAUTH_ERROR_RESPONSE)
+                elif callable(WAUTH_ERROR_RESPONSE):
+                    if WAUTH_REQUIRE_RESYNC:
                         return WAUTH_ERROR_RESPONSE(request, e)
-                    else:
-                        raise e
-        response = self.get_response(request)
-        return response
+                elif WAUTH_REQUIRE_RESYNC:
+                    raise e
+        return self.get_response(request)
 
 
 class SimulateWindowsAuthMiddleware:

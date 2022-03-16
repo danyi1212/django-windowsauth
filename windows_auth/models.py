@@ -45,11 +45,11 @@ class LDAPUserManager(models.Manager):
                 raise ValueError("Username must be in username@domain.com format.")
 
             sam_account_name, domain = username.split("@", 2)
-        else:
-            if "\\" not in username:
-                raise ValueError("Username must be in DOMAIN\\username format.")
-
+        elif "\\" in username:
             domain, sam_account_name = username.split("\\", 2)
+
+        else:
+            raise ValueError("Username must be in DOMAIN\\username format.")
 
         if WAUTH_LOWERCASE_USERNAME:
             sam_account_name = sam_account_name.lower()
@@ -92,10 +92,7 @@ class LDAPUser(models.Model):
             raise AttributeError(f"User {self.user} does not have LDAP Attribute {attribute}")
 
         attribute_obj: Attribute = getattr(ldap_user, attribute)
-        if as_list:
-            return attribute_obj.values
-        else:
-            return attribute_obj.value
+        return attribute_obj.values if as_list else attribute_obj.value
 
     @lru_cache()
     def get_ldap_user(self, attributes: Optional[Iterable[str]] = None) -> Entry:
