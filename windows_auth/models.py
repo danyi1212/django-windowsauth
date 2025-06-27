@@ -1,6 +1,7 @@
 from functools import lru_cache
 from typing import Union, Iterable, Optional, Dict
 
+from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.contrib.auth.models import User, Group
 from django.db import models
@@ -61,7 +62,7 @@ class LDAPUserManager(models.Manager):
 
 
 class LDAPUser(models.Model):
-    user: User = models.OneToOneField(get_user_model(), on_delete=models.CASCADE, related_name="ldap")
+    user: User = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="ldap")
 
     domain: str = models.CharField(max_length=128, help_text="User Domain NetBIOS Name")
 
