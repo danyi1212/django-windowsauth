@@ -12,7 +12,7 @@ class LDAPManager:
 
     def __init__(self, domain: str, settings: Optional[LDAPSettings] = None):
         self.domain = domain
-        self.settings = settings if settings else LDAPSettings.for_domain(domain)
+        self.settings = settings or LDAPSettings.for_domain(domain)
         # create server
         self.server = self._create_server()
         # bind connection

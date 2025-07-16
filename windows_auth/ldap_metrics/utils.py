@@ -70,7 +70,7 @@ def create_usage(domain: str, usage: ConnectionUsage) -> LDAPUsage:
 
 def collect_metrics(unbind: bool = True):
     if unbind:
-        logger.info(f"Unbinding all LDAP Connections for collecting metrics")
+        logger.info("Unbinding all LDAP Connections for collecting metrics")
 
     with LogExecutionTime("Collecting LDAP Connection metrics"):
         try:

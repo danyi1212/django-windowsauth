@@ -18,12 +18,7 @@ def domain_required(function=None, domain=None, login_url=None, bypass_superuser
             return True
 
         if user.is_authenticated and LDAPUser.objects.filter(user=user).exists():
-            if domain:
-                # for specific domain
-                return user.ldap.domain == domain
-            else:
-                # for all domains
-                return True
+            return user.ldap.domain == domain if domain else True
         else:
             return False
 
@@ -48,23 +43,23 @@ def ldap_sync_required(function=None, timedelta=None, login_url=None, allow_non_
     :param raise_exception: raise sync exception and cause status code 500
     """
     def check_sync(user):
-        if user.is_authenticated and LDAPUser.objects.filter(user=user).exists():
-            try:
-                if WAUTH_USE_CACHE:
-                    user.ldap.sync()
-                else:
-                    # check via database query
-                    if not timedelta or not user.ldap.last_sync or user.ldap.last_sync < timezone.now() - timedelta:
-                        user.ldap.sync()
-
-                return True
-            except Exception as e:
-                if raise_exception:
-                    raise e
-                else:
-                    return False
-        else:
+        if (
+            not user.is_authenticated
+            or not LDAPUser.objects.filter(user=user).exists()
+        ):
             return allow_non_ldap
+        try:
+            if WAUTH_USE_CACHE:
+                user.ldap.sync()
+            elif not timedelta or not user.ldap.last_sync or user.ldap.last_sync < timezone.now() - timedelta:
+                user.ldap.sync()
+
+            return True
+        except Exception as e:
+            if raise_exception:
+                raise e
+            else:
+                return False
 
     actual_decorator = user_passes_test(check_sync, login_url=login_url)
     if function:
