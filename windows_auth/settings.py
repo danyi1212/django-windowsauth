@@ -57,17 +57,17 @@ class LDAPSettings:
 
     @classmethod
     def for_domain(cls, domain: str):
-        from windows_auth.conf import WAUTH_DOMAINS
+        from windows_auth.conf import wauth_settings
 
-        if domain not in WAUTH_DOMAINS and DEFAULT_DOMAIN_SETTING not in WAUTH_DOMAINS:
+        if domain not in wauth_settings.WAUTH_DOMAINS and DEFAULT_DOMAIN_SETTING not in wauth_settings.WAUTH_DOMAINS:
             raise ImproperlyConfigured(f"Domain {domain} settings could not be found in WAUTH_DOMAINS setting.")
 
-        domain_settings = WAUTH_DOMAINS.get(domain, {})
+        domain_settings = wauth_settings.WAUTH_DOMAINS.get(domain, {})
         # when setting is an LDAPSetting object
         if isinstance(domain_settings, LDAPSettings):
             return domain_settings
 
-        default_settings = WAUTH_DOMAINS.get(DEFAULT_DOMAIN_SETTING, {})
+        default_settings = wauth_settings.WAUTH_DOMAINS.get(DEFAULT_DOMAIN_SETTING, {})
         # when domain setting
         if isinstance(default_settings, LDAPSettings):
             default_settings = asdict(default_settings)
