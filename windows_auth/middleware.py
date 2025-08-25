@@ -4,8 +4,7 @@ from django.http import HttpResponse, HttpRequest
 from django.utils import timezone
 
 from windows_auth import logger
-from windows_auth.conf import WAUTH_RESYNC_DELTA, WAUTH_USE_CACHE, WAUTH_REQUIRE_RESYNC, WAUTH_ERROR_RESPONSE, \
-    WAUTH_SIMULATE_USER
+from windows_auth.conf import wauth_settings
 from windows_auth.models import LDAPUser
 
 
@@ -22,17 +21,17 @@ class UserSyncMiddleware:
         """
 
         if (request.user and request.user.is_authenticated
-                and LDAPUser.objects.filter(user=request.user).exists() and WAUTH_RESYNC_DELTA not in (None, False)):
+                and LDAPUser.objects.filter(user=request.user).exists() and wauth_settings.WAUTH_RESYNC_DELTA not in (None, False)):
             try:
                 # convert timeout to seconds
-                if isinstance(WAUTH_RESYNC_DELTA, timezone.timedelta):
-                    timeout = WAUTH_RESYNC_DELTA.total_seconds()
+                if isinstance(wauth_settings.WAUTH_RESYNC_DELTA, timezone.timedelta):
+                    timeout = wauth_settings.WAUTH_RESYNC_DELTA.total_seconds()
                 else:
-                    timeout = int(WAUTH_RESYNC_DELTA)
+                    timeout = int(wauth_settings.WAUTH_RESYNC_DELTA)
 
                 ldap_user = LDAPUser.objects.get(user=request.user)
 
-                if WAUTH_USE_CACHE:
+                if wauth_settings.WAUTH_USE_CACHE:
                     # if cache does not exist
                     cache_key = f"wauth_resync_user_{ldap_user.user.id}"
                     if not cache.get(cache_key):
@@ -50,11 +49,11 @@ class UserSyncMiddleware:
             except Exception as e:
                 logger.exception(f"Failed to synchronize user {request.user} against LDAP")
                 # return error response
-                if WAUTH_REQUIRE_RESYNC:
-                    if isinstance(WAUTH_ERROR_RESPONSE, int):
-                        return HttpResponse(f"Authorization Failed.", status=WAUTH_ERROR_RESPONSE)
-                    elif callable(WAUTH_ERROR_RESPONSE):
-                        return WAUTH_ERROR_RESPONSE(request, e)
+                if wauth_settings.WAUTH_REQUIRE_RESYNC:
+                    if isinstance(wauth_settings.WAUTH_ERROR_RESPONSE, int):
+                        return HttpResponse(f"Authorization Failed.", status=wauth_settings.WAUTH_ERROR_RESPONSE)
+                    elif callable(wauth_settings.WAUTH_ERROR_RESPONSE):
+                        return wauth_settings.WAUTH_ERROR_RESPONSE(request, e)
                     else:
                         raise e
         response = self.get_response(request)
@@ -69,6 +68,6 @@ class SimulateWindowsAuthMiddleware:
     def __call__(self, request: HttpRequest):
         if settings.DEBUG and not request.META.get("REMOTE_USER"):
             # Set remote user
-            request.META['REMOTE_USER'] = WAUTH_SIMULATE_USER
+            request.META['REMOTE_USER'] = wauth_settings.WAUTH_SIMULATE_USER
         return self.get_response(request)
 
